@@ -1,51 +1,47 @@
-# VerifiedToken
+# Verified Token
 
-## New Contract  - This may be an intermediary contract that a token will look to
-
-### Intermediary Authority 
-
-setAllowedRegistry - sets an array of ERC780 (or 780 like Smart Contract) contract addresses that this contract will check on transfer
-(OnlyOwner)
-
-setAllowedVerifiers - sets an array of Verifiers that the this contract will check on transfer 
-(OnlyOwner)
-
-setRequiredClaims - sets an array of key pair mappings that this contract is checking for on transfer
-(OnlyOwner)
-
-setClaimsNeeded - sets how many of the AllowedRegistry need to return the RequiredClaim for a transfer to be valid
-(Only Owner)
+## Purpose
+This is a private repo for drafting documentation, code examples, and the EIP specification prior to submission to Ethereum Foundation. A tidy public repo will be created at the time of publication.
 
 ### As Per ERC20:
-totalSupply
-BalanceOf
-Approve ?
-Allowance ?
+`totalSupply`
+`BalanceOf`
+`Approve`
+`Allowance`
 
 ### Modifed ERC20:
+`setIntermediary` - Sets Intermediary for AllowedRegistry, RequiredClaims, AllowedIssuers and ClaimsNeeded
 
-setIntermediary - Sets Intermediary for AllowedRegistry, RequiredClaims, AllowedIssuers and ClaimsNeeded
+`transfer` - check through the AllowedRegistry for all RequiredClaims made by AllowedIssuers for the _to address and counts each entry and transfers only once that count has exceeded ClaimsNeeded
 
-Transfer - check through the AllowedRegistry for all RequiredClaims made by AllowedIssuers for the _to address and counts each entry and transfers only once that count has exceeded ClaimsNeeded
+`transferFrom` - checks through the AllowedRegistry for all RequiredClaims made by AllowedIssuers for the _to address and counts each entry and transfers only once that count has exceeded ClaimsNeeded
 
-TransferFrom - checks through the AllowedRegistry for all RequiredClaims made by AllowedIssuers for the _to address and counts each entry and transfers only once that count has exceeded ClaimsNeeded
+`balanceAtBlockHeight` (optional)
 
-BalanceAtBlockHeight (optional)
+### Verified Token Interface Contract
 
+`setAllowedRegistry` - sets an array of ERC780 (or 780 like Smart Contract) contract addresses that this contract will check on transfer
+(OnlyOwner)
 
+`setAllowedVerifiers` - sets an array of Verifiers that the this contract will check on transfer 
+(OnlyOwner)
 
-Standards that we overlap with in some way - let’s read & learn from the comments refining each of them.
+`setRequiredClaims` - sets an array of key pair mappings that this contract is checking for on transfer
+(OnlyOwner)
 
-https://github.com/ethereum/EIPs/issues/875
+`setClaimsNeeded` - sets how many of the AllowedRegistry need to return the RequiredClaim for a transfer to be valid
+(Only Owner)
 
-https://github.com/ethereum/EIPs/issues/821
+## Broader Context
 
-https://github.com/ethereum/EIPs/issues/721 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md 
+There are standards that we overlap with in some way - let’s read & learn from the comments refining each of them. My current thinking is that we propose our Verified Token Standard as an extension to ERC #20, #223, & #721
 
-https://github.com/ethereum/EIPs/issues/777 (less overlap but I like this one from Jordi)
+- https://github.com/ethereum/EIPs/issues/721 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md 
+- https://github.com/ethereum/EIPs/issues/827
+- https://github.com/ethereum/EIPs/issues/875
+- https://github.com/ethereum/EIPs/issues/821
+- https://github.com/ethereum/EIPs/issues/223 
+- https://github.com/ethereum/EIPs/issues/777 (less overlap but I like this one from Jordi)
 
-https://github.com/ethereum/EIPs/issues/827
-
-https://github.com/ethereum/EIPs/issues/223 
-
-My current thinking is that we propose our Verified Token Standard as an extension to ERC #20, #223, & #721
+Also read:
+https://github.com/ethereum/EIPs/blob/master/ISSUE_TEMPLATE.md
