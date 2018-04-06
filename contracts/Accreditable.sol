@@ -36,11 +36,15 @@ contract Accreditable is Ownable, VerifiedTokenRegistry {
     }
 
     function isAccredited(address _subject) public view returns(bool) {
-        uint256[confirmationsRequired] memory registry_;
+        uint256 confirmations;
+        address[] memory registrars;
+        registrars = getRegistries();
 
-        for(uint256 i=0; i<confirmationsRequired; i++) {
-            registry_[i];
+        for(uint256 i=0; i < registry.length; i++) {
+            if (accreditation[i][_subject]) {
+                confirmations++;
+                break;
+            }
         }
-
     }
 }

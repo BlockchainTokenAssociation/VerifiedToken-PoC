@@ -8,6 +8,7 @@ contract VerifiedTokenRegistry is Ownable {
 
     ERC20 token;
     mapping(address => mapping(address => bool)) public registry;
+    address[] public registrars;
 
     event RegistryAdded(
         address token,
@@ -30,11 +31,17 @@ contract VerifiedTokenRegistry is Ownable {
 
     function addRegistry(address _registry) public onlyOwner {
         registry[token][_registry] = true;
+        registrars.push(_registry);
         emit RegistryAdded(token, _registry, now);
     }
 
     function removeRegistry(address _registry) public onlyOwner {
         delete registry[token][_registry];
+        /// TODO: remove registry from array
         emit RegistryRemoved(token, _registry, now);
+    }
+
+    function getRegistries() internal view returns(address[]) {
+        return registrars;
     }
 }
