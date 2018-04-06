@@ -1,33 +1,40 @@
 pragma solidity ^0.4.21;
 
 import "./../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./../node_modules/zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+
 
 contract VerifiedTokenRegistry is Ownable {
 
+    ERC20 token;
     mapping(address => mapping(address => bool)) public registry;
 
-    event EventRegistryAdded(
-        address indexed issuer,
+    event RegistryAdded(
+        address indexed token,
         address indexed registry,
-        uint updatedAt);
+        uint indexed updatedAt);
 
     event RegistryRemoved(
-        address indexed issuer,
+        address indexed token,
         address indexed registry,
-        uint removedAt);
+        uint indexed removedAt);
 
-    function addRegistry(address subject) public onlyOwner {
-        registry[msg.sender][subject] = true;
-        emit RegistryAdded(msg.sender, subject, now);
+    modifier onlyRegistry() {
+        require(registry[this][msg.sender]);
+        _;
     }
 
-    function isAccredited(address issuer, address subject) public views onlyOwner returns(bool) {
-        return registry[issuer][subject];
+    function VerifiedTokenRegistry(ERC20 _token) public {
+        registry[this][_token] = true;
     }
 
-    function removeRegistry(address issuer, address subject) public onlyOwner {
-        require(msg.sender == issuer || msg.sender == subject);
-        delete registry[issuer][subject];
+    function addRegistry(address _registry) public onlyOwner {
+        registry[this][_registry] = true;
+        emit RegistryAdded(this, _registry, now);
+    }
+
+    function removeRegistry(address subject) public onlyOwner {
+        delete registry[msg.sender][subject];
         emit RegistryRemoved(msg.sender, subject, now);
     }
 }
