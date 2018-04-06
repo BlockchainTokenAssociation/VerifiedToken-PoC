@@ -40,11 +40,12 @@ contract Accreditable is Ownable, VerifiedTokenRegistry {
         address[] memory registrars;
         registrars = getRegistries();
 
-        for(uint256 i=0; i < registry.length; i++) {
-            if (accreditation[i][_subject]) {
+        for(uint256 i=0; i < registrars.length; i++) {
+            if (accreditation[registrars[i]][_subject]) {
                 confirmations++;
-                break;
+                if (confirmations >= confirmationsRequired) { return true; }
             }
         }
+        return false;
     }
 }
