@@ -10,31 +10,31 @@ contract VerifiedTokenRegistry is Ownable {
     mapping(address => mapping(address => bool)) public registry;
 
     event RegistryAdded(
-        address indexed token,
+        address token,
         address indexed registry,
-        uint indexed updatedAt);
+        uint updatedAt);
 
     event RegistryRemoved(
-        address indexed token,
+        address token,
         address indexed registry,
-        uint indexed removedAt);
+        uint updatedAt);
 
     modifier onlyRegistry() {
-        require(registry[this][msg.sender]);
+        require(registry[token][msg.sender]);
         _;
     }
 
     function VerifiedTokenRegistry(ERC20 _token) public {
-        registry[this][_token] = true;
+        token = _token;
     }
 
     function addRegistry(address _registry) public onlyOwner {
-        registry[this][_registry] = true;
-        emit RegistryAdded(this, _registry, now);
+        registry[token][_registry] = true;
+        emit RegistryAdded(token, _registry, now);
     }
 
-    function removeRegistry(address subject) public onlyOwner {
-        delete registry[msg.sender][subject];
-        emit RegistryRemoved(msg.sender, subject, now);
+    function removeRegistry(address _registry) public onlyOwner {
+        delete registry[token][_registry];
+        emit RegistryRemoved(token, _registry, now);
     }
 }
