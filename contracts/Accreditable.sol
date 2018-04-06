@@ -4,18 +4,15 @@ import "./VerifiedTokenRegistry.sol";
 
 contract Accreditable is Ownable, VerifiedTokenRegistry {
 
-    uint256 private confirmationsRequired_;
-    VerifiedTokenRegistry[] registrars_;
+    uint256 private confirmationsRequired;
 
-    function Accreditable(uint256 _confirmationsRequired, VerifiedTokenRegistry[] _registrars) public {
-        confirmationsRequired_ = _confirmationsRequired;
-        registrars_ = _registrars;
+    function Accreditable(uint256 _confirmationsRequired) public {
+        confirmationsRequired = _confirmationsRequired;
     }
 
     function setConfirmationsRequired(uint256 _confirmationsRequired) public onlyOwner {
-        confirmationsRequired_ = _confirmationsRequired;
+        confirmationsRequired = _confirmationsRequired;
     }
-
 
     function addAccreditation(address issuer, address subject) public onlyRegistry returns(bool) {
     }
