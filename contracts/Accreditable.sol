@@ -1,9 +1,16 @@
+/**
+ * Created on 2018-04-08 17:29
+ * @summary: 
+ * @author: tikonoff
+ */
 pragma solidity ^0.4.21;
 
 import "./VerifiedTokenRegistry.sol";
 
+/**
+ * @title: 
+ */
 contract Accreditable is Ownable, VerifiedTokenRegistry {
-
     uint256 private confirmationsRequired;
     mapping(address => mapping(address => bool)) accreditation;
 
@@ -17,24 +24,46 @@ contract Accreditable is Ownable, VerifiedTokenRegistry {
         address indexed subject,
         uint updatedAt);
 
+/**
+ * @dev: 
+ * @param _confirmationsRequired
+ */
     function Accreditable(uint256 _confirmationsRequired) public {
         confirmationsRequired = _confirmationsRequired;
     }
 
+/**
+ * @dev: 
+ * @param _confirmationsRequired
+ */
     function setConfirmationsRequired(uint256 _confirmationsRequired) public onlyOwner {
         confirmationsRequired = _confirmationsRequired;
     }
 
+/**
+ * @dev: 
+ * @param _registry
+ * @param _subject
+ */
     function addAccreditation(address _registry, address _subject) public onlyRegistry {
         accreditation[_registry][_subject] = true;
         emit Accredited(_registry, _subject, now);
     }
 
+/**
+ * @dev: 
+ * @param _registry
+ * @param _subject
+ */
     function withdrawAccreditation(address _registry, address _subject) public onlyRegistry {
         delete registry[_registry][_subject];
         emit AccreditationWithdrawn(_registry, _subject, now);
     }
 
+/**
+ * @dev: 
+ * @param _subject
+ */
     function isAccredited(address _subject) public view returns(bool) {
         uint256 confirmations;
         address[] memory registrars;
