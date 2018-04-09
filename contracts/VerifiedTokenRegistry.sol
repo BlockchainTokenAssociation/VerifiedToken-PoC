@@ -1,7 +1,6 @@
 /**
  * Created on 2018-04-08 17:28
- * @summary: 
- * @author: tikonoff
+ * @author: Blockchain Labs, NZ
  */
 pragma solidity ^0.4.21;
 
@@ -11,15 +10,22 @@ import "./../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
- * @title: 
+ * @title: VerifiedTokenRegistry
+ * @summary: Registries management contract
  */
 contract VerifiedTokenRegistry is Ownable {
     using SafeMath for uint256;
 
-    ERC20 token;
+    ERC20 public token;
+
+    // Mapping of registries available for the given token
     mapping(address => mapping(address => bool)) public registry;
+
+    // Array of all available registries to iterate through them when checking how many registries
+    // have accredited the given address.
     address[] public registries;
-    // Mapping from registry id to position in the registrars array
+
+    // Mapping from registry id to position in the registries array
     mapping(address => uint256) internal registriesIndex;
 
     event RegistryAdded(
@@ -38,16 +44,16 @@ contract VerifiedTokenRegistry is Ownable {
     }
 
 /**
- * @dev: 
- * @param _token
+ * @dev: Constructor is used to link all registries to some token.
+ * @param _token - address of the VerifiedToken
  */
     function VerifiedTokenRegistry(ERC20 _token) public {
         token = _token;
     }
 
 /**
- * @dev: 
- * @param _registry
+ * @dev: Adding registry to the list
+ * @param _registry - address of the registry to add
  */
     function addRegistry(address _registry) public onlyOwner {
         registry[token][_registry] = true;
@@ -57,8 +63,10 @@ contract VerifiedTokenRegistry is Ownable {
     }
 
 /**
- * @dev: 
- * @param _registry
+ * @dev: Removing registry from the list
+ * @dev: Beside of removing the registry by itself,
+ * @dev: it also reorganize the array of registries.
+ * @param _registry - address of the registry to remove
  */
     function removeRegistry(address _registry) public onlyOwner {
         require(registry[token][_registry]);
@@ -76,6 +84,9 @@ contract VerifiedTokenRegistry is Ownable {
         emit RegistryRemoved(token, _registry, now);
     }
 
+    /**
+     * @dev: Returning the list of current registries
+     */
     function getRegistries() internal view returns(address[]) {
         return registries;
     }
