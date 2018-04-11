@@ -7,7 +7,6 @@ pragma solidity ^0.4.21;
 /// @author: Blockchain Labs, NZ
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "./VerifiedTokenRegistry.sol";
 
 
@@ -53,7 +52,7 @@ contract VerifiedTokenController is Ownable {
         }
     }
 
-    /// @dev:
+    /// @dev: checks if each key=>value pair exist in the required number of registries
     function isVerified(address _receiver) public view returns(bool) {
         uint256 pairConfirmations;
         uint256 confirmations;
