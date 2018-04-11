@@ -1,94 +1,99 @@
-/**
- * Created on 2018-04-10 12:00
- * @author: Blockchain Labs, NZ
- */
+pragma experimental ABIEncoderV2;
 pragma solidity ^0.4.21;
 
-import "./../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./../node_modules/zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "./../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol";
+/// @title: VerifiedTokenRegistry
+/// @summary: Registries management contract
+/// Created on 2018-04-10 12:00
+/// @author: Blockchain Labs, NZ
+
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 
-/**
- * @title: VerifiedTokenRegistry
- * @summary: Registries management contract
- */
 contract VerifiedTokenRegistry is Ownable {
     using SafeMath for uint256;
 
-    ERC20 public token;
+    bool incrementEnabled;
 
-    /**
-     * @dev: Mapping of registries available for the given token.
-     * @dev: token contract address => registry address => boolean
-     */
-    mapping(address => mapping(address => bool)) public registry;
+    struct pairs {
+        bytes32 key;
+        bytes32 value;
+    }
 
-    /**
-     * @dev: token contract address => array of registries for that token
-     * @notice: Array of all available registries for the given token to iterate through them
-     *          while checking how many registries have accredited for the given address.
-     */
-    mapping(address => address[]) public registries;
+    /// @notice: Registry described by key=>value pairs
+    /// @dev: [receiver address => [key => value]]
+    /// @dev: Example:
+    /// @dev: 0x12.. => ["type" => "exchange"]
+    /// @dev: 0x12.. => ["age group" => "20-30"]
+    mapping(address => mapping(bytes32 => bytes32)) private record;
 
-    // Mapping from registry id to position in the registries array
-    mapping(address => uint256) internal registriesIndex;
+    /// @dev: keys used by the registry (in records).
+    /// @dev: Array of keys is needed to iterate through them, and mapping is used to
+    /// @dev: decrease the gas of checking whether the new key is need to be added to array or not.
+    bytes32[] public keys;
+    mapping(bytes32 => bool) private key;
 
-    event RegistryAdded(
-        address token,
+    event RecordUpdated(
         address indexed registry,
+        address indexed receiver,
+        bytes32 key,
+        bytes32 value,
         uint updatedAt);
 
-    event RegistryRemoved(
-        address token,
+    event RecordDeleted(
         address indexed registry,
+        address indexed receiver,
         uint updatedAt);
 
-    modifier onlyRegistry(ERC20 _token) {
-        require(registry[_token][msg.sender]);
-        _;
+    /// @notice: Registry can add new address to the list
+    function updateRecord(address _receiver, bytes32 _key, bytes32 _value) public onlyOwner {
+        record[_receiver][_key] = _value;
+        if(!isExist(_key))
+            addNewKey(_key);
+        emit RecordUpdated(this, _receiver, _key, _value, now);
     }
 
-    /**
-     * @dev: Adding registry to the list
-     * @param _registry - address of the registry to add
-     * @param _token - address of Verified Token
-     */
-    function addRegistry(ERC20 _token, address _registry) public onlyOwner {
-        registry[_token][_registry] = true;
-        registries[_token].push(_registry);
-        registriesIndex[_registry] = registries[_token].length.sub(1);
-        emit RegistryAdded(token, _registry, now);
+    /// @notice: Reqistry can remove the given address from the list
+    function deleteRecord(uint256 _registryId, address _receiver) public onlyOwner {
+        for(uint256 i = 0; i < keys.length; i++ )
+            delete record[_receiver][keys[i]];
+        emit RecordDeleted(this, _receiver, now);
     }
 
-    /**
-     * @dev: Removing registry from the list
-     * @dev: Beside of removing the registry by itself,
-     * @dev: it also reorganize the array of registries.
-     * @param _registry - address of the registry to remove
-     * @param _token - address of Verified Token
-     */
-    function removeRegistry(ERC20 _token, address _registry) public onlyOwner {
-        require(registry[_token][_registry]);
-
-        uint256 registryIndex = registriesIndex[_registry];
-        uint256 lastRegistriesIndex = registries[_token].length.sub(1);
-        address lastRegistry = registries[_token][lastRegistriesIndex];
-
-        registries[_token][registryIndex] = lastRegistry;
-        registries[_token][lastRegistriesIndex] = 0;
-        registries[_token].length--;
-        registriesIndex[_registry] = 0;
-        delete registry[_token][_registry];
-
-        emit RegistryRemoved(_token, _registry, now);
+    /// @dev: Check if registry contains record with verifying address and pair key => value
+    function findAddress(address _receiver, bytes32 _key, bytes32 _value) public view returns(bool) {
+        return(record[_receiver][_key] == _value);
     }
 
-    /**
-     * @dev: Returning the list of current registries
-     * @param _token - address of Verified Token
-     */
-    function getRegistries(ERC20 _token) internal view returns(address[]) {
-        return registries[_token];
+    /// @dev: check if key is already exist
+    function isExist(bytes32 _key) internal view returns(bool) {
+        return(key[_key]);
     }
+
+    /// @dev: add new key to mapping and array
+    function addNewKey(bytes32 _key) public {
+        keys.push(_key);
+        key[_key] = true;
+    }
+
+//    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
+//    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
+//    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
+//    function getAddressPairs(address _receiver) public view returns(pairs[]) {
+//        pairs[] storage allPairs;
+//        pairs memory currentPair;
+//        bytes32 currentPairValue;
+//
+//        for(uint256 i = 0; i < keys.length; i++ ) {
+//            currentPairValue = record[_receiver][keys[i]];
+//            if(currentPairValue != "") {
+//                currentPair.key = keys[i];
+//                currentPair.value = currentPairValue;
+//            }
+//            allPairs.push(currentPair);
+//        }
+//        return(allPairs);
+//    }
+
+
 }
