@@ -26,7 +26,8 @@ contract VerifiedTokenRegistry is Ownable {
     /// @dev: 0x12.. => ["type" => "exchange"]
     /// @dev: 0x12.. => ["age group" => "20-30"]
     mapping(address => mapping(bytes32 => bytes32)) private record;
-    mapping(bytes32 => bytes32) private pair;
+
+    /// @dev: keys used by the registry (in records)
     bytes32[] public keys;
 
     event RecordUpdated(
@@ -55,28 +56,30 @@ contract VerifiedTokenRegistry is Ownable {
         emit RecordDeleted(this, _receiver, now);
     }
 
-    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
-    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
-    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
-    function getAddressPairs(address _receiver) public view returns(pairs[]) {
-        pairs[] storage allPairs;
-        pairs memory currentPair;
-        bytes32 currentPairValue;
-
-        for(uint256 i = 0; i < keys.length; i++ ) {
-            currentPairValue = record[_receiver][keys[i]];
-            if(currentPairValue != "") {
-                currentPair.key = keys[i];
-                currentPair.value = currentPairValue;
-            }
-            allPairs.push(currentPair);
-        }
-        return(allPairs);
-    }
-
     /// @dev: Check if registry contains record with verifying address and pair key => value
     function findAddress(address _receiver, bytes32 _key, bytes32 _value) public view returns(bool) {
         return(record[_receiver][_key] == _value);
     }
+
+
+//    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
+//    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
+//    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
+//    function getAddressPairs(address _receiver) public view returns(pairs[]) {
+//        pairs[] storage allPairs;
+//        pairs memory currentPair;
+//        bytes32 currentPairValue;
+//
+//        for(uint256 i = 0; i < keys.length; i++ ) {
+//            currentPairValue = record[_receiver][keys[i]];
+//            if(currentPairValue != "") {
+//                currentPair.key = keys[i];
+//                currentPair.value = currentPairValue;
+//            }
+//            allPairs.push(currentPair);
+//        }
+//        return(allPairs);
+//    }
+
 
 }
