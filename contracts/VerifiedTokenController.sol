@@ -28,10 +28,8 @@ contract VerifiedTokenController is Ownable {
         bytes32 indexed value,
         uint updatedAt);
 
-    /// @dev: Constructor.
-    /// @notice: Contract owner must set up the.
-    /// @param _types - types of required confirmations
-    /// @param _confirmationsRequired - how many confirmations required for each type of registry, respectively
+    /// @dev: Constructor
+    /// @dev: Contract owner must set up registry(ies) to use
     function VerifiedTokenController(VerifiedTokenRegistry[] _registries) public {
         for (uint256 i = 0; i < _registries.length; i++) {
             registries.push(_registries[i]);

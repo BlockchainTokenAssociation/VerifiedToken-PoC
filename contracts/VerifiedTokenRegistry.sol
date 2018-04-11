@@ -27,8 +27,11 @@ contract VerifiedTokenRegistry is Ownable {
     /// @dev: 0x12.. => ["age group" => "20-30"]
     mapping(address => mapping(bytes32 => bytes32)) private record;
 
-    /// @dev: keys used by the registry (in records)
+    /// @dev: keys used by the registry (in records).
+    /// @dev: Array of keys is needed to iterate through them, and mapping is used to
+    /// @dev: decrease the gas of checking whether the new key is need to be added to array or not.
     bytes32[] public keys;
+    mapping(bytes32 => bool) private key;
 
     event RecordUpdated(
         address indexed registry,
@@ -45,14 +48,15 @@ contract VerifiedTokenRegistry is Ownable {
     /// @notice: Registry can add new address to the list
     function updateRecord(address _receiver, bytes32 _key, bytes32 _value) public onlyOwner {
         record[_receiver][_key] = _value;
+        if(!isExist(_key))
+            addNewKey(_key);
         emit RecordUpdated(this, _receiver, _key, _value, now);
     }
 
     /// @notice: Reqistry can remove the given address from the list
     function deleteRecord(uint256 _registryId, address _receiver) public onlyOwner {
-        for(uint256 i = 0; i < keys.length; i++ ) {
+        for(uint256 i = 0; i < keys.length; i++ )
             delete record[_receiver][keys[i]];
-        }
         emit RecordDeleted(this, _receiver, now);
     }
 
@@ -61,8 +65,19 @@ contract VerifiedTokenRegistry is Ownable {
         return(record[_receiver][_key] == _value);
     }
 
+    /// @dev: check if key is already exist
+    function isExist(bytes32 _key) internal view returns(bool) {
+        return(key[_key]);
+    }
 
-//    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
+    /// @dev: add new key to mapping and array
+    function addNewKey(bytes32 _key) public {
+        keys.push(_key);
+        key[_key] = true;
+    }
+
+
+    //    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
 //    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
 //    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
 //    function getAddressPairs(address _receiver) public view returns(pairs[]) {
