@@ -62,7 +62,7 @@ contract VerifiedTokenController is Ownable {
             registry = VerifiedTokenRegistry(registries[i]);
             for(uint256 j = 0; j < pairsToConfirm; j++) {
                 currentPair = informationRequired[j];
-                if(registry.checkAddress(_receiver, currentPair.key, currentPair.value))
+                if(registry.findAddress(_receiver, currentPair.key, currentPair.value))
                     pairConfirmations++;
             }
             if (pairConfirmations >= pairsToConfirm) { confirmations++; }

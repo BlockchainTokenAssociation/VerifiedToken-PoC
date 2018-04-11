@@ -76,8 +76,7 @@ contract VerifiedTokenRegistry is Ownable {
         key[_key] = true;
     }
 
-
-    //    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
+//    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
 //    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
 //    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
 //    function getAddressPairs(address _receiver) public view returns(pairs[]) {
