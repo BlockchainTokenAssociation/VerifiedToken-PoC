@@ -1,5 +1,45 @@
 {
+  "name": "verifiedtoken",
+  "version": "1.0.0",
+  "description": "Verified Token checks if token-transfer to some address is authorised",
+  "main": "/",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
   "devDependencies": {
-    "zeppelin-solidity": "^1.8.0"
-  }
+    "zeppelin-solidity": "^1.8.0",
+    "truffle": "^4.1.3",
+    "ethereumjs-testrpc": "^6.0.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.23.0",
+    "bignumber.js": "^5.0.0",
+    "coveralls": "^3.0.0",
+    "ethereumjs-abi": "^0.6.4",
+    "mocha-lcov-reporter": "^1.3.0",
+    "solidity-coverage": "^0.4.11",
+    "truffle-hdwallet-provider": "^0.0.3"
+  },
+  "scripts": {
+    "build": "truffle compile && truffle migrate",
+    "node": "ganache-cli -m 'zipper' -l 8000000 -a 101 -b 5 -p 9545",
+    "test": "scripts/test.sh",
+    "coverage": "scripts/coverage.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlockchainLabsNZ/VerifiedToken.git"
+  },
+  "keywords": [
+    "verifiedToken"
+  ],
+  "author": "Blockchain Labs, NZ",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BlockchainLabsNZ/VerifiedToken/issues"
+  },
+  "homepage": "https://github.com/BlockchainLabsNZ/VerifiedToken#readme"
 }
