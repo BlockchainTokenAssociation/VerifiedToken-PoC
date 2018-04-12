@@ -9,14 +9,6 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 contract VerifiedTokenRegistry is Ownable {
-
-    bool incrementEnabled;
-
-    struct pairs {
-        bytes32 key;
-        bytes32 value;
-    }
-
     /*
      * @notice: Registry described by key=>value pairs
      * @dev: [receiver address => [key => value]]
@@ -25,6 +17,11 @@ contract VerifiedTokenRegistry is Ownable {
      * @dev: 0x12.. => ["age group" => "20-30"]
      */
     mapping(address => mapping(bytes32 => bytes32)) private record;
+
+    struct pairs {
+        bytes32 key;
+        bytes32 value;
+    }
 
     /*
      *  @dev: keys used by the registry (in records).
