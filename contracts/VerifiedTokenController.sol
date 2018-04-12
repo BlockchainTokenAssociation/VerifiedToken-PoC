@@ -23,7 +23,7 @@ contract VerifiedTokenController is Ownable {
         bytes32 value;
     }
 
-    pairs[] private informationRequired;
+    pairs[] public informationRequired;
 
     event RequiredConfirmationsUpdated(
         bytes32 indexed key,

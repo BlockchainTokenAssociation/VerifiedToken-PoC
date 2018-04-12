@@ -15,18 +15,18 @@ var toUtf8 = function(hex) {
     return web3.toAscii(hex).replace(/\u0000/g, '');
 };
 
-contract('Verified Token Controller', function ([deployer, registry]) {
+contract('Verified Token Controller', function ([deployer, registry, stranger, lawful]) {
 
     before(async function () {
         this.registry = await Registry.new();
         this.token = await Token.new();
         this.cntlr = await Controller.new([this.registry.address]);
-        console.log("    -> controller address: " + this.cntlr.address);
+        // console.log("    -> controller address: " + this.cntlr.address);
     });
 
     describe('Updating required confirmations', function () {
 
-        it('should update required confirmations and fire events on each update', async function () {
+        it('should update confirmations and fire an event on each update', async function () {
             const {logs} = await this.cntlr.updateRequiredConfirmations(["token address","allowed age group"],[this.token.address.toString(),"18+"]).should.be.fulfilled;
             const event = logs.filter(e => e.event === 'RequiredConfirmationsUpdated');
             should.exist(event);
@@ -38,24 +38,32 @@ contract('Verified Token Controller', function ([deployer, registry]) {
             toUtf8(event[1].args.value).should.equal("18+");
         });
 
+        it('should fail if number of keys not the same as the number of values', async function () {
+            await this.cntlr.updateRequiredConfirmations(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
+        });
+
     });
 
     describe('Verification', function () {
+
+        let result;
+
         it('-', async function () {
-            await this.token.giveMeCoins(deployer, 100*10**18)
+            (await this.cntlr.isVerified(stranger)).should.equal(false);
         });
     });
+
 
 });
 
 
-contract('Verified Token', function ([deployer, registry, authorizedReceiver, someoneUnknown]) {
+contract('Verified Token', function ([deployer, registry, someoneUnknown]) {
 
     let balance;
 
     before(async function () {
         this.token = await Token.new();
-        console.log("    -> token address: " + this.token.address);
+        // console.log("    -> token address: " + this.token.address);
     });
 
     describe('Token operations', function () {
