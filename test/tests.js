@@ -20,15 +20,22 @@ contract('Verified Token Controller', function ([deployer, registry, stranger, l
     before(async function () {
         this.registry = await Registry.new();
         this.token = await Token.new();
-        this.cntlr = await Controller.new([this.registry.address]);
+        this.cntlr = await Controller.new([this.registry.address], 1);
         // console.log("    -> controller address: " + this.cntlr.address);
     });
 
     describe('Updating required confirmations', function () {
 
-        it('should update confirmations and fire an event on each update', async function () {
-            const {logs} = await this.cntlr.updateRequiredConfirmations(["token address","allowed age group"],[this.token.address.toString(),"18+"]).should.be.fulfilled;
-            const event = logs.filter(e => e.event === 'RequiredConfirmationsUpdated');
+        it('should update confirmations number and fire an event', async function () {
+            const {logs} = await this.cntlr.updateRequiredConfirmations(5).should.be.fulfilled;
+            const event = logs.find(e => e.event === 'RequiredConfirmationsUpdated');
+            should.exist(event);
+            event.args.confirmations.toNumber().should.equal(5);
+        });
+
+        it('should update key => value pairs and fire an event for each pair', async function () {
+            const {logs} = await this.cntlr.updateRequiredData(["token address","allowed age group"],[this.token.address.toString(),"18+"]).should.be.fulfilled;
+            const event = logs.filter(e => e.event === 'RequiredDataUpdated');
             should.exist(event);
             event.length.should.equal(2);
             toUtf8(event[0].args.key).should.equal("token address");
@@ -39,18 +46,23 @@ contract('Verified Token Controller', function ([deployer, registry, stranger, l
         });
 
         it('should fail if number of keys not the same as the number of values', async function () {
-            await this.cntlr.updateRequiredConfirmations(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
+            await this.cntlr.updateRequiredData(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
         });
 
     });
 
     describe('Verification', function () {
 
-        let result;
+        it('should be authorized when confirmations required = 0', async function () {
+            await this.cntlr.updateRequiredConfirmations(0);
+            (await this.cntlr.isVerified(stranger)).should.equal(true);
+        });
 
-        it('-', async function () {
+        it('should fail if confirmations required > 0', async function () {
+            await this.cntlr.updateRequiredConfirmations(2);
             (await this.cntlr.isVerified(stranger)).should.equal(false);
         });
+
     });
 
 

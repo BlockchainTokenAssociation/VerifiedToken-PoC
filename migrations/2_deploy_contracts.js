@@ -11,7 +11,7 @@ module.exports = function(deployer) {
     }).then(function(){
         return deployer.deploy(VTRegistry);
 	}).then(function() {
-        return deployer.deploy(VTController, [VTRegistry.address]);
+        return deployer.deploy(VTController, [VTRegistry.address], 1);
     }).then(function(){
         return deployer.deploy(StandardToken);
     }).then(function(){

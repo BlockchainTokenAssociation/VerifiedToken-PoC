@@ -16,6 +16,10 @@ contract VerifiedTokenController is Ownable {
      * @notice: authorities that trusted by token issuer
      */
     VerifiedTokenRegistry[] public registries;
+
+    /*
+     * @dev: if zero, no checks will be performed
+     */
     uint256 private confirmationsRequired;
 
     struct pairs {
@@ -26,6 +30,10 @@ contract VerifiedTokenController is Ownable {
     pairs[] public informationRequired;
 
     event RequiredConfirmationsUpdated(
+        uint256 confirmations,
+        uint updatedAt);
+
+    event RequiredDataUpdated(
         bytes32 indexed key,
         bytes32 indexed value,
         uint updatedAt);
@@ -34,16 +42,26 @@ contract VerifiedTokenController is Ownable {
      * @dev: Constructor
      * @dev: Contract owner must set up registry(ies) to use
      */
-    function VerifiedTokenController(VerifiedTokenRegistry[] _registries) public {
+    function VerifiedTokenController(VerifiedTokenRegistry[] _registries, uint256 _confirmationsRequired) public {
         for (uint256 i = 0; i < _registries.length; i++) {
             registries.push(_registries[i]);
+            confirmationsRequired = _confirmationsRequired;
         }
     }
 
     /*
      * @notice: Owner can add, delete or update the number of confirmations required for each registry
      */
-    function updateRequiredConfirmations(bytes32[] _keys, bytes32[] _values) public onlyOwner {
+    function updateRequiredConfirmations(uint256 _confirmationsRequired) {
+        confirmationsRequired = _confirmationsRequired;
+        emit RequiredConfirmationsUpdated(_confirmationsRequired, now);
+    }
+
+
+    /*
+     * @notice: Owner can add, delete or update key=>values required to grant authorisation
+     */
+    function updateRequiredData(bytes32[] _keys, bytes32[] _values) public onlyOwner {
         uint256 pairsNumber = _keys.length;
         require( pairsNumber == _values.length);
         pairs memory newPair;
@@ -52,7 +70,7 @@ contract VerifiedTokenController is Ownable {
             newPair.key = _keys[i];
             newPair.value =_values[i];
             informationRequired.push(newPair);
-            emit RequiredConfirmationsUpdated(_keys[i], _values[i], now);
+            emit RequiredDataUpdated(_keys[i], _values[i], now);
         }
     }
 
@@ -60,6 +78,8 @@ contract VerifiedTokenController is Ownable {
      * @dev: checks if each key=>value pair exist in the required number of registries
      */
     function isVerified(address _receiver) public view returns(bool) {
+        if(confirmationsRequired == 0)
+            return true;
         uint256 pairConfirmations;
         uint256 confirmations;
         pairs memory currentPair;
