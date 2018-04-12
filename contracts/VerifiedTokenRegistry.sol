@@ -1,4 +1,4 @@
-pragma experimental ABIEncoderV2;
+//pragma experimental ABIEncoderV2;
 pragma solidity ^0.4.21;
 
 /// @title: VerifiedTokenRegistry
@@ -7,11 +7,9 @@ pragma solidity ^0.4.21;
 /// @author: Blockchain Labs, NZ
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 contract VerifiedTokenRegistry is Ownable {
-    using SafeMath for uint256;
 
     bool incrementEnabled;
 
@@ -20,16 +18,20 @@ contract VerifiedTokenRegistry is Ownable {
         bytes32 value;
     }
 
-    /// @notice: Registry described by key=>value pairs
-    /// @dev: [receiver address => [key => value]]
-    /// @dev: Example:
-    /// @dev: 0x12.. => ["type" => "exchange"]
-    /// @dev: 0x12.. => ["age group" => "20-30"]
+    /*
+     * @notice: Registry described by key=>value pairs
+     * @dev: [receiver address => [key => value]]
+     * @dev: Example:
+     * @dev: 0x12.. => ["type" => "exchange"]
+     * @dev: 0x12.. => ["age group" => "20-30"]
+     */
     mapping(address => mapping(bytes32 => bytes32)) private record;
 
-    /// @dev: keys used by the registry (in records).
-    /// @dev: Array of keys is needed to iterate through them, and mapping is used to
-    /// @dev: decrease the gas of checking whether the new key is need to be added to array or not.
+    /*
+     *  @dev: keys used by the registry (in records).
+     *  @dev: Array of keys is needed to iterate through them, and mapping is used to
+     *  @dev: decrease the gas of checking whether the new key is need to be added to array or not.
+     */
     bytes32[] public keys;
     mapping(bytes32 => bool) private key;
 
@@ -45,7 +47,9 @@ contract VerifiedTokenRegistry is Ownable {
         address indexed receiver,
         uint updatedAt);
 
-    /// @notice: Registry can add new address to the list
+    /*
+     * @notice: Registry can add new address to the list
+     */
     function updateRecord(address _receiver, bytes32 _key, bytes32 _value) public onlyOwner {
         record[_receiver][_key] = _value;
         if(!isExist(_key))
@@ -53,24 +57,32 @@ contract VerifiedTokenRegistry is Ownable {
         emit RecordUpdated(this, _receiver, _key, _value, now);
     }
 
-    /// @notice: Reqistry can remove the given address from the list
+    /*
+     * @notice: Reqistry can remove the given address from the list
+     */
     function deleteRecord(uint256 _registryId, address _receiver) public onlyOwner {
         for(uint256 i = 0; i < keys.length; i++ )
             delete record[_receiver][keys[i]];
         emit RecordDeleted(this, _receiver, now);
     }
 
-    /// @dev: Check if registry contains record with verifying address and pair key => value
+    /*
+     * @dev: Check if registry contains record with verifying address and pair key => value
+     */
     function findAddress(address _receiver, bytes32 _key, bytes32 _value) public view returns(bool) {
         return(record[_receiver][_key] == _value);
     }
 
-    /// @dev: check if key is already exist
+    /*
+     * @dev: check if key is already exist
+     */
     function isExist(bytes32 _key) internal view returns(bool) {
         return(key[_key]);
     }
 
-    /// @dev: add new key to mapping and array
+    /*
+     * @dev: add new key to mapping and array
+     */
     function addNewKey(bytes32 _key) public {
         keys.push(_key);
         key[_key] = true;

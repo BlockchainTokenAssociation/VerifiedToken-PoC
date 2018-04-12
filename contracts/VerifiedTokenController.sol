@@ -12,7 +12,9 @@ import "./VerifiedTokenRegistry.sol";
 
 contract VerifiedTokenController is Ownable {
 
-    /// @notice: authorities that trusted by token issuer
+    /*
+     * @notice: authorities that trusted by token issuer
+     */
     VerifiedTokenRegistry[] public registries;
     uint256 private confirmationsRequired;
 
@@ -28,19 +30,23 @@ contract VerifiedTokenController is Ownable {
         bytes32 indexed value,
         uint updatedAt);
 
-    /// @dev: Constructor
-    /// @dev: Contract owner must set up registry(ies) to use
+    /*
+     * @dev: Constructor
+     * @dev: Contract owner must set up registry(ies) to use
+     */
     function VerifiedTokenController(VerifiedTokenRegistry[] _registries) public {
         for (uint256 i = 0; i < _registries.length; i++) {
             registries.push(_registries[i]);
         }
     }
 
-    /// @notice: Owner can add, delete or update the number of confirmations required for each registry
+    /*
+     * @notice: Owner can add, delete or update the number of confirmations required for each registry
+     */
     function updateRequiredConfirmations(bytes32[] _keys, bytes32[] _values) public onlyOwner {
         uint256 pairsNumber = _keys.length;
         require( pairsNumber == _values.length);
-        pairs newPair;
+        pairs memory newPair;
 
         for (uint256 i = 0; i < pairsNumber; i++) {
             newPair.key = _keys[i];
@@ -50,7 +56,9 @@ contract VerifiedTokenController is Ownable {
         }
     }
 
-    /// @dev: checks if each key=>value pair exist in the required number of registries
+    /*
+     * @dev: checks if each key=>value pair exist in the required number of registries
+     */
     function isVerified(address _receiver) public view returns(bool) {
         uint256 pairConfirmations;
         uint256 confirmations;

@@ -16,6 +16,9 @@
     "babel-preset-stage-2": "^6.24.1",
     "babel-preset-stage-3": "^6.17.0",
     "babel-register": "^6.23.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.2",
     "bignumber.js": "^5.0.0",
     "coveralls": "^3.0.0",
     "ethereumjs-abi": "^0.6.4",
@@ -25,7 +28,7 @@
   },
   "scripts": {
     "build": "truffle compile && truffle migrate",
-    "node": "ganache-cli -m 'zipper' -l 8000000 -a 101 -b 5 -p 9545",
+    "node": "ganache-cli -l 8000000 -a 101 -b 5 -p 9545",
     "test": "scripts/test.sh",
     "coverage": "scripts/coverage.sh"
   },
