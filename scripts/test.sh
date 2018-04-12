@@ -19,7 +19,7 @@ cleanup() {
 if [ "$SOLIDITY_COVERAGE" = true ]; then
   testrpc_port=8555
 else
-  testrpc_port=9545
+  testrpc_port=8545
 fi
 
 testrpc_running() {

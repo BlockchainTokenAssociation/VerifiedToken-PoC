@@ -1,4 +1,3 @@
-//pragma experimental ABIEncoderV2;
 pragma solidity ^0.4.21;
 
 /// @title: VerifiedTokenRegistry
@@ -60,7 +59,7 @@ contract VerifiedTokenRegistry is Ownable {
     /*
      * @notice: Reqistry can remove the given address from the list
      */
-    function deleteRecord(uint256 _registryId, address _receiver) public onlyOwner {
+    function deleteRecord(address _receiver) public onlyOwner {
         for(uint256 i = 0; i < keys.length; i++ )
             delete record[_receiver][keys[i]];
         emit RecordDeleted(this, _receiver, now);

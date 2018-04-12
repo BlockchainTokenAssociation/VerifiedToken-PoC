@@ -14,7 +14,7 @@ module.exports = {
   networks: {
     development: {
       host: 'localhost',
-      port: 9545,
+      port: 8545,
       network_id: '*',
       gas: 4600000
     },
@@ -25,7 +25,7 @@ module.exports = {
     coverage: {
       host: "localhost",
       network_id: "*", 
-      port: 8555,         
+      port: 8555,
       gas: 0xfffffffffff, 
       gasPrice: 0x0
     }
