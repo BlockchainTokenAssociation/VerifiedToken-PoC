@@ -30,9 +30,9 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
     describe('addNewKey()', function () {
 
         it('should return true on adding new key', async function () {
-            assert.isNotOk(await this.registry.isExist("old key"));
+            (await this.registry.isExist("old key")).should.be.false;
             await this.registry.addNewKey("old key").should.be.fulfilled;
-            assert.isOk(await this.registry.isExist("old key"));
+            (await this.registry.isExist("old key")).should.be.true;
         });
 
     });
@@ -40,14 +40,14 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
     describe('updateRecord()', function () {
 
         it('should add a new key if it does not exist yet', async function () {
-            assert.isNotOk(await this.registry.isExist("age group"));
+            (await this.registry.isExist("age group")).should.be.false;
             await this.registry.updateRecord(lawful, "age group", "10+").should.be.fulfilled;
-            assert.isOk(await this.registry.isExist("age group"));
+            (await this.registry.isExist("age group")).should.be.true;
         });
 
         it('should update record', async function () {
             await this.registry.updateRecord(lawful, "age group", "18+").should.be.fulfilled;
-            assert.isOk(await this.registry.findAddress(lawful, "age group", "18+"));
+            (await this.registry.findAddress(lawful, "age group", "18+")).should.be.true;
         });
 
         it('should fire an event', async function () {
@@ -67,15 +67,15 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
     describe('findAddress()', function () {
 
         it('should return TRUE if address was found', async function () {
-            assert.isOk(await this.registry.findAddress(lawful, "age group", "18+"));
+            (await this.registry.findAddress(lawful, "age group", "18+")).should.be.true;
         });
 
         it('should return FALSE if ADDRESS was not found', async function () {
-            assert.isNotOk(await this.registry.findAddress(stranger, "age group", "18+"));
+            (await this.registry.findAddress(stranger, "age group", "18+")).should.be.false;
         });
 
         it('should return FALSE if address was NOT found in the KEY => VALUE pair', async function () {
-            assert.isNotOk(await this.registry.findAddress(lawful, "age group", "30"));
+            (await this.registry.findAddress(lawful, "age group", "30")).should.be.false;
         });
 
     });
@@ -93,7 +93,7 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
         });
 
         it('record should be deleted', async function () {
-            assert.isNotOk(await this.registry.findAddress(lawful, "id type", "passport"));
+            (await this.registry.findAddress(lawful, "id type", "passport")).should.be.false;
         });
 
 

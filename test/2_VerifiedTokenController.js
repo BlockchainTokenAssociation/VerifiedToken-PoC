@@ -11,13 +11,12 @@ const Controller = artifacts.require('VerifiedTokenController');
 const Registry = artifacts.require('VerifiedTokenRegistry');
 
 
-contract('VerifiedTokenController.sol', function ([deployer, registry, stranger, lawful]) {
+contract('VerifiedTokenController.sol', function ([deployer, registry, stranger]) {
 
     before(async function () {
         this.registry = await Registry.new();
         this.cntlr = await Controller.new([this.registry.address], 1);
         this.token = await Token.new(this.cntlr.address);
-        // console.log("    -> controller address: " + this.cntlr.address);
     });
 
     describe('updateRequiredConfirmations()', function () {
@@ -50,14 +49,14 @@ contract('VerifiedTokenController.sol', function ([deployer, registry, stranger,
     });
 
     describe('isVerified()', function () {
-        it('should return TRUE when confirmations required = 0', async function () {
+        it('should return TRUE if required number of confirmations = 0', async function () {
             await this.cntlr.updateRequiredConfirmations(0);
-            (await this.cntlr.isVerified(stranger)).should.equal(true);
+            (await this.cntlr.isVerified(stranger)).should.be.true;
         });
 
-        it('should fail if confirmations required > 0', async function () {
+        it('should return FALSE if required number of confirmations > 0', async function () {
             await this.cntlr.updateRequiredConfirmations(2);
-            (await this.cntlr.isVerified(stranger)).should.equal(false);
+            (await this.cntlr.isVerified(stranger)).should.be.false;
         });
     });
 
