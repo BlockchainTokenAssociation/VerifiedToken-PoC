@@ -10,7 +10,6 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract VerifiedTokenRegistry is Ownable {
     /*
-     * @notice: Registry described by key=>value pairs
      * @dev: [receiver address => [key => value]]
      * @dev: Example:
      * @dev: 0x12.. => ["type" => "exchange"]
@@ -24,7 +23,7 @@ contract VerifiedTokenRegistry is Ownable {
     }
 
     /*
-     *  @dev: keys used by the registry (in records).
+     *  @dev: keys used by registry (in records).
      *  @dev: Array of keys is needed to iterate through them, and mapping is used to
      *  @dev: decrease the gas of checking whether the new key is need to be added to array or not.
      */
@@ -44,7 +43,7 @@ contract VerifiedTokenRegistry is Ownable {
         uint updatedAt);
 
     /*
-     * @notice: Registry can add new address to the list
+     * @notice: Registry can add new addresses to the list or update existed
      */
     function updateRecord(address _receiver, bytes32 _key, bytes32 _value) public onlyOwner {
         record[_receiver][_key] = _value;
@@ -63,7 +62,7 @@ contract VerifiedTokenRegistry is Ownable {
     }
 
     /*
-     * @dev: Check if registry contains record with verifying address and pair key => value
+     * @dev: Check if registry contains the record with verifying address and pair key => value
      */
     function findAddress(address _receiver, bytes32 _key, bytes32 _value) public view returns(bool) {
         return(record[_receiver][_key] == _value);
