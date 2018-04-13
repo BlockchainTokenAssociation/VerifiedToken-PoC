@@ -38,7 +38,7 @@ contract VerifiedTokenRegistry is Ownable {
         bytes32 value,
         uint updatedAt);
 
-    event RecordDeleted(
+    event AddressDeleted(
         address indexed registry,
         address indexed receiver,
         uint updatedAt);
@@ -54,12 +54,12 @@ contract VerifiedTokenRegistry is Ownable {
     }
 
     /*
-     * @notice: Reqistry can remove the given address from the list
+     * @notice: Registry can remove the given address completely
      */
-    function deleteRecord(address _receiver) public onlyOwner {
+    function deleteAddress(address _receiver) public onlyOwner {
         for(uint256 i = 0; i < keys.length; i++ )
             delete record[_receiver][keys[i]];
-        emit RecordDeleted(this, _receiver, now);
+        emit AddressDeleted(this, _receiver, now);
     }
 
     /*
@@ -72,14 +72,14 @@ contract VerifiedTokenRegistry is Ownable {
     /*
      * @dev: check if key is already exist
      */
-    function isExist(bytes32 _key) internal view returns(bool) {
+    function isExist(bytes32 _key) public view returns(bool) {
         return(key[_key]);
     }
 
     /*
      * @dev: add new key to mapping and array
      */
-    function addNewKey(bytes32 _key) public {
+    function addNewKey(bytes32 _key) public onlyOwner returns(bool) {
         keys.push(_key);
         key[_key] = true;
     }
