@@ -15,8 +15,8 @@ contract('VerifiedTokenController.sol', function ([deployer, registry, stranger,
 
     before(async function () {
         this.registry = await Registry.new();
-        this.token = await Token.new();
         this.cntlr = await Controller.new([this.registry.address], 1);
+        this.token = await Token.new(this.cntlr.address);
         // console.log("    -> controller address: " + this.cntlr.address);
     });
 
