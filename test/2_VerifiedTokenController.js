@@ -1,4 +1,6 @@
 import EVMThrow from './helpers/EVMThrow';
+import { toUtf8 } from './helpers/asciiConverter';
+
 const BigNumber = web3.BigNumber;
 
 const should = require('chai')
@@ -95,8 +97,3 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
 
 });
 
-
-// https://github.com/ethereum/web3.js/issues/337#issuecomment-197750774
-var toUtf8 = function(hex) {
-    return web3.toAscii(hex).replace(/\u0000/g, '');
-};

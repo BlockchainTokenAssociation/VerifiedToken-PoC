@@ -16,7 +16,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '*',
-      gas: 4612388,
+      gas: 4600000,
       gasPrice: 0x0
     },
     ropsten: {
@@ -36,12 +36,13 @@ module.exports = {
       enabled: true,
       runs: 200
     }
-  },
-  mocha: {
-      reporter: 'eth-gas-reporter',
-      reporterOptions : {
-          currency: 'CHF',
-          gasPrice: 21
-      }
   }
+  //,
+  // mocha: {
+  //     reporter: 'eth-gas-reporter',
+  //     reporterOptions : {
+  //         currency: 'CHF',
+  //         gasPrice: 21
+  //     }
+  // }
 };

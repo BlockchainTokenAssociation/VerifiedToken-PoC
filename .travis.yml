@@ -1,5 +1,4 @@
 service_name: travis-pro
-repo_token: f5uUaWhxtRI0sFBbsLWAsIwizZYYiUPRu
 sudo: required
 dist: trusty
 language: node_js

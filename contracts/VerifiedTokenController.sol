@@ -54,7 +54,7 @@ contract VerifiedTokenController is Ownable {
     /*
      * @notice: Owner can add, delete or update the number of confirmations required for each registry
      */
-    function updateRegistries(VerifiedTokenRegistry[] _registries) {
+    function updateRegistries(VerifiedTokenRegistry[] _registries) public onlyOwner {
         for (uint256 i = 0; i < _registries.length; i++) {
             require(isContract(_registries[i]) && _registries[i] != address(0x0));
             registries.push(_registries[i]);
@@ -65,7 +65,7 @@ contract VerifiedTokenController is Ownable {
     /*
      * @notice: Owner can add, delete or update the number of confirmations required for each registry
      */
-    function updateRequiredConfirmations(uint256 _confirmationsRequired) {
+    function updateRequiredConfirmations(uint256 _confirmationsRequired) public onlyOwner {
         confirmationsRequired = _confirmationsRequired;
         emit RequiredConfirmationsUpdated(_confirmationsRequired, now);
     }

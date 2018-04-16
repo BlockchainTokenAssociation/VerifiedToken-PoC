@@ -1,4 +1,5 @@
 import EVMThrow from './helpers/EVMThrow';
+import { toUtf8 } from './helpers/asciiConverter';
 const BigNumber = web3.BigNumber;
 
 const should = require('chai')
@@ -18,11 +19,7 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
     describe('isExist()', function () {
 
         it('should return TRUE if key is exist', async function () {
-            await this.registry.isExist("old key").should.be.fulfilled;
-        });
-
-        it('should return FALSE if key is not exist', async function () {
-            await this.registry.isExist("new key").should.be.fulfilled;
+            (await this.registry.isExist("some key")).should.be.false;
         });
 
     });
@@ -30,9 +27,9 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
     describe('addNewKey()', function () {
 
         it('should return true on adding new key', async function () {
-            (await this.registry.isExist("old key")).should.be.false;
-            await this.registry.testAddNewKey("old key").should.be.fulfilled;
-            (await this.registry.isExist("old key")).should.be.true;
+            (await this.registry.isExist("new key")).should.be.false;
+            await this.registry.testAddNewKey("new key").should.be.fulfilled;
+            (await this.registry.isExist("new key")).should.be.true;
         });
 
     });
@@ -101,8 +98,3 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
 
 
 });
-
-// https://github.com/ethereum/web3.js/issues/337#issuecomment-197750774
-var toUtf8 = function(hex) {
-    return web3.toAscii(hex).replace(/\u0000/g, '');
-};

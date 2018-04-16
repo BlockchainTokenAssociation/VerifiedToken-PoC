@@ -29,7 +29,7 @@
   },
   "scripts": {
     "build": "truffle compile && truffle migrate",
-    "node": "ganache-cli -l 8000000 -a 101 -b 5 -p 8545",
+    "node": "ganache-cli --gasLimit 8000000 --port 8545",
     "test": "scripts/test.sh",
     "coverage": "scripts/coverage.sh"
   },
