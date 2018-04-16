@@ -82,7 +82,7 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
             await this.cntlr.updateRegistries([0x0]).should.be.rejectedWith(EVMThrow);
         });
 
-        it('othervise, should update list of registries and fire an event', async function () {
+        it('otherwise, should update list of registries and fire an event', async function () {
             const {logs} = await this.cntlr.updateRegistries([this.registry.address, this.token.address]).should.be.fulfilled;
             const event = logs.find(e => e.event === 'AcceptedRegistriesUpdated');
             should.exist(event);

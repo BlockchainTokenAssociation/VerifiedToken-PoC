@@ -6,7 +6,7 @@ const should = require('chai')
     .use(require('chai-bignumber')(BigNumber))
     .should();
 
-const Registry = artifacts.require('VerifiedTokenRegistry');
+const Registry = artifacts.require('VerifiedTokenRegistryMock');
 
 
 contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, lawful]) {
@@ -31,7 +31,7 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
 
         it('should return true on adding new key', async function () {
             (await this.registry.isExist("old key")).should.be.false;
-            await this.registry.addNewKey("old key").should.be.fulfilled;
+            await this.registry.testAddNewKey("old key").should.be.fulfilled;
             (await this.registry.isExist("old key")).should.be.true;
         });
 

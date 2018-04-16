@@ -78,7 +78,7 @@ contract VerifiedTokenRegistry is Ownable {
     /*
      * @dev: add new key to mapping and array
      */
-    function addNewKey(bytes32 _key) public onlyOwner returns(bool) {
+    function addNewKey(bytes32 _key) internal returns(bool) {
         keys.push(_key);
         key[_key] = true;
     }
