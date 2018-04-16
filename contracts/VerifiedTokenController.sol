@@ -38,15 +38,28 @@ contract VerifiedTokenController is Ownable {
         bytes32 indexed value,
         uint updatedAt);
 
+    event AcceptedRegistriesUpdated(
+        VerifiedTokenRegistry[] registries,
+        uint updatedAt);
+
     /*
      * @dev: Constructor
      * @dev: Contract owner must set up registry(ies) to use
      */
     function VerifiedTokenController(VerifiedTokenRegistry[] _registries, uint256 _confirmationsRequired) public {
+        confirmationsRequired = _confirmationsRequired;
+        updateRegistries(_registries);
+    }
+
+    /*
+     * @notice: Owner can add, delete or update the number of confirmations required for each registry
+     */
+    function updateRegistries(VerifiedTokenRegistry[] _registries) {
         for (uint256 i = 0; i < _registries.length; i++) {
+            require(isContract(_registries[i]) && _registries[i] != address(0x0));
             registries.push(_registries[i]);
-            confirmationsRequired = _confirmationsRequired;
         }
+        emit AcceptedRegistriesUpdated(_registries, now);
     }
 
     /*
@@ -98,4 +111,11 @@ contract VerifiedTokenController is Ownable {
         }
         return false;
     }
+
+    function isContract(address addr) public view returns (bool) {
+        uint size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
+    }
+
 }

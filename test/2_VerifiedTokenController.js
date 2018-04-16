@@ -11,7 +11,7 @@ const Controller = artifacts.require('VerifiedTokenController');
 const Registry = artifacts.require('VerifiedTokenRegistry');
 
 
-contract('VerifiedTokenController.sol', function ([deployer, registry, stranger]) {
+contract('VerifiedTokenController.sol', function ([deployer, registered, stranger]) {
 
     before(async function () {
         this.registry = await Registry.new();
@@ -58,6 +58,39 @@ contract('VerifiedTokenController.sol', function ([deployer, registry, stranger]
             await this.cntlr.updateRequiredConfirmations(2);
             (await this.cntlr.isVerified(stranger)).should.be.false;
         });
+    });
+
+    describe('isContract()', function () {
+
+        it('should return FALSE if address is not a contract', async function () {
+            (await this.cntlr.isContract(stranger)).should.be.false;
+        });
+
+        it('should return TRUE if address is a contract', async function () {
+            (await this.cntlr.isContract(this.registry.address)).should.be.true;
+        });
+
+    });
+
+    describe('updateRegistries()', function () {
+
+        it('should fail if registry address is not a contract', async function () {
+            await this.cntlr.updateRegistries([0x1]).should.be.rejectedWith(EVMThrow);
+        });
+
+        it('should fail if zero address', async function () {
+            await this.cntlr.updateRegistries([0x0]).should.be.rejectedWith(EVMThrow);
+        });
+
+        it('othervise, should update list of registries and fire an event', async function () {
+            const {logs} = await this.cntlr.updateRegistries([this.registry.address, this.token.address]).should.be.fulfilled;
+            const event = logs.find(e => e.event === 'AcceptedRegistriesUpdated');
+            should.exist(event);
+            event.args.registries.length.should.equal(2);
+            event.args.registries[0].should.equal(this.registry.address);
+            event.args.registries[1].should.equal(this.token.address);
+        });
+
     });
 
 });

@@ -15,6 +15,6 @@ module.exports = function(deployer) {
 	}).then(function() {
         return deployer.deploy(VTController, [VTRegistry.address], 1);
     }).then(function(){
-        return deployer.deploy(VTToken, VTController.address, { gas: 8000000 });
+        return deployer.deploy(VTToken, VTController.address);
     })
 };
