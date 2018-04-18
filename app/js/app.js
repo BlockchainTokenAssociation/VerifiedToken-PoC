@@ -18,7 +18,7 @@ const tokenContract = '0x4ed5AFcbE003F4DB3f9778ba3D52469f2bEaCB31';
 document.getElementById("addressButton").addEventListener("click", isVerified);
 
 
-main();
+window.onload = main();
 
 
 async function main() {
@@ -35,7 +35,7 @@ async function main() {
 function init() {
     const Web3 = require('web3');
 
-    if (typeof(web3) === "undefined") {
+    if (typeof(window.web3) === "undefined") {
         UIkit.notification('No Web3 provider found. Connecting to testnet.');
         localWeb3 = new Web3('https://kovan.infura.io/' + INFURA_TOKEN);
     } else {
