@@ -1,5 +1,6 @@
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
+
 UIkit.use(Icons);
 
 let localWeb3, registry, controller, token;
