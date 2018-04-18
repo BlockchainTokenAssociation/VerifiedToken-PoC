@@ -14,15 +14,15 @@ const registryContract = '0xaFFC460463B1e18846D4CEf0ED4AB65420A82C48';
 const controllerContract = '0x2E4bbea265835442724ab04B686fEdc2b22C7c67';
 const tokenContract = '0x4ed5AFcbE003F4DB3f9778ba3D52469f2bEaCB31';
 
-
-init();
-main();
-
 document.getElementById("addressButton").addEventListener("click", isVerified);
 
 
-async function init() {
-    await deployer();
+main();
+
+
+async function main() {
+    await init();
+
     registry = await deploy(registryABI, registryContract);
     controller = await deploy(controllerABI, controllerContract);
     token = await deploy(tokenABI, tokenContract);
@@ -31,7 +31,7 @@ async function init() {
 }
 
 
-function deployer() {
+function init() {
     const Web3 = require('web3');
 
     if (typeof(web3) === "undefined") {
@@ -50,19 +50,9 @@ function deploy(abi, address) {
 }
 
 
-async function main() {
-    let balance = await localWeb3.eth.getBalance("0x00253A250857af21562A45E4795E88FD3AC55751");
-    await console.log("Balance: " + Object.keys(balance) );
-}
-
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function isVerified() {
     let address = await document.querySelector('#addressToCheck').value;
-    let result = await controller.methods.isVerified(address).call({from: '0x00253A250857af21562A45E4795E88FD3AC55751'});
+    let result = await controller.methods.isVerified(address).call();
     if (result === true)
         UIkit.notification("Verified.");
     else
@@ -74,13 +64,6 @@ async function isExist() {
     let key = await document.querySelector('#keyToCheck').value;
     let result = await registry.methods.isExist(localWeb3.utils.toHex(key)).call();
     UIkit.notification(result);
-}
-
-
-function findAddress() {
-    let address = document.querySelector('#addressToCheck').value;
-    if (registry.methods.findAddress(address, "Dark side", "yes") == true)
-        UIkit.notification(result);
 }
 
 
