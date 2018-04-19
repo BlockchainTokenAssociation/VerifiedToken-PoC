@@ -45,3 +45,20 @@ There are standards that we overlap with in some way - let’s read & learn from
 
 Also read:
 https://github.com/ethereum/EIPs/blob/master/ISSUE_TEMPLATE.md
+
+
+## Front End
+
+
+### Installation
+
+* Clone / download repo.
+* Run npm install
+* In terminal run `npm run dev` to run webpack server
+* You can run `webpack --watch` in other terminal if you are going to change code in ./app/ folder 
+* Open `localhost:8080` in your browser
+
+[Demo](https://blockchainlabsnz.github.io/VerifiedToken/)
+
+<br>
+
