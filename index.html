@@ -4,12 +4,18 @@
     <meta charset="utf-8">
     <title>Demo</title>
     <link rel="stylesheet" href="./demo/uikit.css">
+    <link rel="stylesheet" href="./demo/style.css">
 </head>
-<body>
 
-<div class="uk-container">
-    <div class="uk-card uk-card-body uk-card-primary">
-        <h3 class="uk-card-title">Verified Token</h3>
+<body>
+<div>
+    <img src="./demo/logo.png">
+    <p>Blockchain Labs, NZ</p><br>
+</div>
+<div class="uk-container" >
+    <div class="uk-card uk-card-body uk-card-secondary">
+        <h2 class="uk-card-title">VERIFIED TOKEN DEMO</h2>
+
         <input
                 type="text"
                 name="address"
@@ -18,11 +24,13 @@
                 placeholder="0x123456... - address to verify" >
         <button
                 class="uk-button uk-button-default uk-width-1-5@l uk-width-1-4@m uk-width-1-3@s uk-width-1-1"
-                uk-tooltip="title: Is your recipient verified?"
+                uk-tooltip="title: Check if receiver is verified"
                 id="addressButton">Check address</button>
-        <p>0x00253A250857af21562A45E4795E88FD3AC55751 - check this one
+        <p></p>
     </div>
+    <p>check this one &rarr; 0x00253A250857af21562A45E4795E88FD3AC55751 </p>
 </div>
+
 
 <script src="./demo/main.js"></script>
 </body>

@@ -1,0 +1,21 @@
+html {
+    background-color: #abc;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+body {
+    background-image: linear-gradient(to bottom, rgba(170, 187, 204, 1), rgba(0, 0, 0, 0.1)), url("/demo/bg.jpg");
+    font-family: 'Ubuntu Mono derivative Powerline', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+    height: 100%;
+}
+h1, h2 {
+    font-weight: bold;
+    font-family: "Ubuntu Mono derivative Powerline", sans-serif;
+}
