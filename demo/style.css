@@ -6,7 +6,7 @@ html {
     background-size: cover;
 }
 body {
-    background-image: linear-gradient(to bottom, rgba(170, 187, 204, 1), rgba(0, 0, 0, 0.1)), url("/demo/bg.jpg");
+    background-image: linear-gradient(to bottom, rgba(170, 187, 204, 1), rgba(0, 0, 0, 0.1)), url("bg.jpg");
     font-family: 'Ubuntu Mono derivative Powerline', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -19,7 +19,6 @@ h1, h2 {
     font-weight: bold;
     font-family: "Ubuntu Mono derivative Powerline", sans-serif;
 }
-
 .uk-card-secondary {
     opacity: 0.6;
 }
