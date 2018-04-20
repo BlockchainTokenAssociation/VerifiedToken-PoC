@@ -3,7 +3,7 @@ import Icons from 'uikit/dist/js/uikit-icons'
 
 UIkit.use(Icons)
 
-let localWeb3, registry, controller, token, eventResult
+let localWeb3, registry, controller, token
 
 const INFURA_TOKEN = ""
 
@@ -13,70 +13,59 @@ const tokenABI = [{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{
 
 const registryContract = '0xaFFC460463B1e18846D4CEf0ED4AB65420A82C48'
 const controllerContract = '0x2E4bbea265835442724ab04B686fEdc2b22C7c67'
-const tokenContract = '0x4ed5AFcbE003F4DB3f9778ba3D52469f2bEaCB31';
+const tokenContract = '0x4ed5AFcbE003F4DB3f9778ba3D52469f2bEaCB31'
 
-document.getElementById("isVerified").addEventListener("click", isVerified)
-
-// document.getElementById("registries").addEventListener("click", registries)
-// document.getElementById("requirements").addEventListener("click", requirements)
-// document.getElementById("confirmations").addEventListener("click", confirmations)
-
-
+document.getElementById("verify").addEventListener("click", verify)
+document.getElementById("confirmations").addEventListener("click", confirmations)
 
 window.onload = main()
 
-
 async function main() {
-    await init()
+  await init()
 
-    registry = await deploy(registryABI, registryContract)
-    controller = await deploy(controllerABI, controllerContract)
-    token = await deploy(tokenABI, tokenContract)
+  registry = await deploy(registryABI, registryContract)
+  controller = await deploy(controllerABI, controllerContract)
+  token = await deploy(tokenABI, tokenContract)
 
-    UIkit.notification('Blockchain connected')
+  UIkit.notification('Blockchain connected.')
 }
-
 
 function init() {
-    const Web3 = require('web3')
+  const Web3 = require('web3')
 
-    if (typeof(window.web3) === "undefined") {
-        UIkit.notification('No Metamask found, using Infura')
-        localWeb3 = new Web3('https://kovan.infura.io/' + INFURA_TOKEN)
-    } else {
-        UIkit.notification('Using Metamask')
-        localWeb3 = new Web3(window.web3.currentProvider)
-    }
+  if (typeof(window.web3) === "undefined") {
+    UIkit.notification('No Web3 provider found. Connecting to testnet.')
+    localWeb3 = new Web3('https://kovan.infura.io/' + INFURA_TOKEN)
+  } else {
+    UIkit.notification('Web3 initialized.')
+    localWeb3 = new Web3(window.web3.currentProvider)
+  }
 }
-
 
 function deploy(abi, address) {
-    let contract = new localWeb3.eth.Contract(abi, address)
-    return contract
+  let contract = new localWeb3.eth.Contract(abi, address)
+  return contract
 }
 
-
-async function isVerified() {
-    let address = await document.querySelector('#addressToCheck').value
-    result = await controller.methods.isVerified(address).call()
-    if (result === true)
-        UIkit.notification("Verified.")
-    else
-        UIkit.notification("Not verified.")
+async function verify() {
+  let address = await document.querySelector('#addressToCheck').value
+  let result = await controller.methods.isVerified(address).call()
+  if (result === true)
+    UIkit.notification("Verified.")
+  else
+    UIkit.notification("Not verified.")
 }
 
-//
 // async function isExist() {
 //   let key = await document.querySelector('#keyToCheck').value
 //   UIkit.notification(await registry.methods.isExist(localWeb3.utils.toHex(key)).call())
 // }
-//
-//
-// async function confirmations() {
-//     eventResult = await controller.events.RequiredConfirmationsUpdated({filter: {fromBlock: 0, toBlock: 'latest'}})
-//     console.log('myEvent: ' + eventResult)
-//     UIkit.notification("")
-// }
-//
+
+async function confirmations() {
+  eventResult = await controller.events.RequiredConfirmationsUpdated({filter: {fromBlock: 0, toBlock: 'latest'}})
+  console.log('myEvent: ' + eventResult)
+  UIkit.notification("")
+}
+
 
 
