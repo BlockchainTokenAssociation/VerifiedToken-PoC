@@ -40,7 +40,8 @@
     "test": "scripts/test.sh",
     "coverage": "scripts/coverage.sh",
     "build": "webpack",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server --progress --colors",
+    "start": "webpack && npm run dev"
   },
   "repository": {
     "type": "git",

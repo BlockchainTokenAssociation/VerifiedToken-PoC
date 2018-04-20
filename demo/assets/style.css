@@ -18,7 +18,18 @@ body {
 h1, h2 {
     font-weight: bold;
     font-family: "Ubuntu Mono derivative Powerline", sans-serif;
+    margin: 20px 0 0 0;
 }
-.uk-card-secondary {
+#ext {
     opacity: 0.6;
+    padding-bottom: 70px;
 }
+
+.buttons {
+    margin: 6px 15px;
+}
+
+.checkthis {
+    color: #9ab;
+}
+
