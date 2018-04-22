@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.22;
 
 /// @title: VerifiedToken
 /// @summary: Implementation of transfer() and transferFrom() that checks if the receiver
@@ -13,7 +13,7 @@ import "./VerifiedTokenController.sol";
 contract VerifiedToken is StandardToken {
     VerifiedTokenController private tokenController;
 
-    function VerifiedToken(VerifiedTokenController _controller) {
+    constructor(VerifiedTokenController _controller) public {
         tokenController = VerifiedTokenController(_controller);
     }
 

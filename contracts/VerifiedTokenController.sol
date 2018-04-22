@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.22;
 
 /// @title: VerifiedTokenController
 /// @summary: Verification management for token owner
@@ -43,10 +43,9 @@ contract VerifiedTokenController is Ownable {
         uint updatedAt);
 
     /*
-     * @dev: Constructor
      * @dev: Contract owner must set up registry(ies) to use
      */
-    function VerifiedTokenController(VerifiedTokenRegistry[] _registries, uint256 _confirmationsRequired) public {
+    constructor(VerifiedTokenRegistry[] _registries, uint256 _confirmationsRequired) public {
         confirmationsRequired = _confirmationsRequired;
         updateRegistries(_registries);
     }

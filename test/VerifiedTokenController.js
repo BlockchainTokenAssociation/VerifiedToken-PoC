@@ -105,5 +105,13 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
 
   });
 
+  // describe('getRequiredData()', function () {
+  //
+  //   it('should return the data', async function () {
+  //     (await this.cntlr.getRequiredData()).should.be.fullfiled;
+  //   });
+  //
+  // });
+
 });
 
