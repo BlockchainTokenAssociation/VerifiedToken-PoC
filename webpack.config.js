@@ -1,14 +1,17 @@
 var path = require('path');
 
 module.exports = {
-    mode: "development",
-    entry: './demo/app.js',
-    output: {
-        path: path.resolve(__dirname, 'demo/assets'),
-    },
-    plugins: [
+  mode: "development",
+  entry: [
+    './demo/app.js',
+    'webpack-dev-server/client?http://localhost:8080'
     ],
-    node: {
-        fs: "empty"
-    }
+  output: {
+      path: path.resolve(__dirname, 'demo/assets'),
+  },
+  plugins: [
+  ],
+  node: {
+      fs: "empty"
+  }
 };

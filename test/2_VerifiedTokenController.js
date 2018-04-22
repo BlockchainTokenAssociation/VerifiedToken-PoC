@@ -95,5 +95,15 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
 
     });
 
+  describe('getNumberOfConfirmationsRequired()', function () {
+
+    it('should return the number', async function () {
+      (await this.cntlr.getNumberOfConfirmationsRequired()).toNumber().should.equal(2);
+      await this.cntlr.updateRequiredConfirmations(1);
+      (await this.cntlr.getNumberOfConfirmationsRequired()).toNumber().should.equal(1);
+    });
+
+  });
+
 });
 

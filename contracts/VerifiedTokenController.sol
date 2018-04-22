@@ -27,7 +27,7 @@ contract VerifiedTokenController is Ownable {
         bytes32 value;
     }
 
-    pairs[] public informationRequired;
+    pairs[] private informationRequired;
 
     event RequiredConfirmationsUpdated(
         uint256 confirmations,
@@ -117,5 +117,10 @@ contract VerifiedTokenController is Ownable {
         assembly { size := extcodesize(addr) }
         return size > 0;
     }
+
+    function getNumberOfConfirmationsRequired() public view returns (uint) {
+        return confirmationsRequired;
+    }
+
 
 }

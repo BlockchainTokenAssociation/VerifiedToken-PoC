@@ -3,7 +3,8 @@ import Icons from 'uikit/dist/js/uikit-icons'
 
 UIkit.use(Icons)
 
-let localWeb3, registry, controller, token
+let localWeb3, wsWeb3
+let registry, controller, token, results
 
 const INFURA_TOKEN = ""
 
@@ -16,7 +17,7 @@ const controllerContract = '0x2E4bbea265835442724ab04B686fEdc2b22C7c67'
 const tokenContract = '0x4ed5AFcbE003F4DB3f9778ba3D52469f2bEaCB31'
 
 document.getElementById("verify").addEventListener("click", verify)
-document.getElementById("confirmations").addEventListener("click", confirmations)
+document.getElementById("registries").addEventListener("click", registries)
 
 window.onload = main()
 
@@ -40,20 +41,21 @@ function init() {
     UIkit.notification('Web3 initialized.')
     localWeb3 = new Web3(window.web3.currentProvider)
   }
+  wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('ws://kovan.infura.io/ws'));
+
 }
 
 function deploy(abi, address) {
-  let contract = new localWeb3.eth.Contract(abi, address)
-  return contract
+  return new localWeb3.eth.Contract(abi, address)
 }
 
 async function verify() {
   let address = await document.querySelector('#addressToCheck').value
   let result = await controller.methods.isVerified(address).call()
   if (result === true)
-    UIkit.notification("Verified.")
+    UIkit.notification("Verified!")
   else
-    UIkit.notification("Not verified.")
+    UIkit.notification("Not verified :(")
 }
 
 // async function isExist() {
@@ -61,11 +63,7 @@ async function verify() {
 //   UIkit.notification(await registry.methods.isExist(localWeb3.utils.toHex(key)).call())
 // }
 
-async function confirmations() {
-  eventResult = await controller.events.RequiredConfirmationsUpdated({filter: {fromBlock: 0, toBlock: 'latest'}})
-  console.log('myEvent: ' + eventResult)
-  UIkit.notification("")
-}
+
 
 
 
