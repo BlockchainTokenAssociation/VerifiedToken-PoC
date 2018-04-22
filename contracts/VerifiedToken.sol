@@ -1,4 +1,4 @@
-pragma solidity ^0.4.22;
+pragma solidity ^0.4.23;
 
 /// @title: VerifiedToken
 /// @summary: Implementation of transfer() and transferFrom() that checks if the receiver

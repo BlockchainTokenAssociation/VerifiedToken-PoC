@@ -1,4 +1,4 @@
-pragma solidity ^0.4.22;
+pragma solidity ^0.4.23;
 
 /// @title: VerifiedTokenController
 /// @summary: Verification management for token owner
