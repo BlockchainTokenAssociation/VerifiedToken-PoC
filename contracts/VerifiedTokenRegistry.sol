@@ -83,23 +83,35 @@ contract VerifiedTokenRegistry is Ownable {
         key[_key] = true;
     }
 
-//    /// @dev: TODO: the function should be removed while returning an array of struct is still an experimental feature
-//    /// @dev: TODO: Experimental pragma instruction on the top of the page should be also removed.
-//    /// @dev: It would be possible to get all pairs (array of struct) of given address... Someday...
-//    function getAddressPairs(address _receiver) public view returns(pairs[]) {
-//        pairs[] storage allPairs;
-//        pairs memory currentPair;
-//        bytes32 currentPairValue;
-//
-//        for(uint256 i = 0; i < keys.length; i++ ) {
-//            currentPairValue = record[_receiver][keys[i]];
-//            if(currentPairValue != "") {
-//                currentPair.key = keys[i];
-//                currentPair.value = currentPairValue;
-//            }
-//            allPairs.push(currentPair);
-//        }
-//        return(allPairs);
-//    }
+    /*
+     * @dev: returns key=>value pairs of given receiver
+     */
+    function getAddressPairs(address _receiver) public view returns(bytes32[], bytes32[]) {
+        uint256 maxNumberOfPairs = keys.length;
+        bytes32 currentValue;
+
+        bytes32[] memory receiverKeys = new bytes32[](maxNumberOfPairs);
+        bytes32[] memory receiverValues = new bytes32[](maxNumberOfPairs);
+        uint256 iteratorOfPairsOfReceiver;
+
+        for(uint256 i = 0; i < keys.length; i++ ) {
+            currentValue= record[_receiver][keys[i]];
+            if(currentValue != 0) {
+                receiverKeys[iteratorOfPairsOfReceiver] = keys[i];
+                receiverValues[iteratorOfPairsOfReceiver] = currentValue;
+                iteratorOfPairsOfReceiver++;
+            }
+        }
+
+        bytes32[] memory returnKeys = new bytes32[](iteratorOfPairsOfReceiver);
+        bytes32[] memory returnValues = new bytes32[](iteratorOfPairsOfReceiver);
+
+        for(i = 0; i < iteratorOfPairsOfReceiver; i++ ) {
+            returnKeys[i] = receiverKeys[i];
+            returnValues[i] = receiverValues[i];
+        }
+
+        return(returnKeys, returnValues);
+    }
 
 }

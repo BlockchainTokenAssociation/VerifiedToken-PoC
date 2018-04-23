@@ -10,7 +10,7 @@ const should = require('chai')
 const Registry = artifacts.require('VerifiedTokenRegistryMock');
 
 
-contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, lawful]) {
+contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, lawful, dartVeider]) {
 
     before(async function () {
         this.registry = await Registry.new();
@@ -96,5 +96,29 @@ contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, l
 
     });
 
+    describe('getAddressPairs()', function () {
+
+      it('should return key=>value pairs for given address', async function () {
+        await this.registry.updateRecord(dartVeider, "Side", "Dark").should.be.fulfilled;
+        await this.registry.updateRecord(dartVeider, "Has son", "yes").should.be.fulfilled;
+        let result = await this.registry.getAddressPairs(dartVeider);
+        let pairs = [];
+
+        for (let i = 0; i < result[0].length; i++) {
+          let pair = {
+            key:  result[0][i],
+            value: result[1][i],
+          }
+          pairs.push(pair)
+        }
+
+        expect(pairs.length).to.be.equal(2);
+        expect(toUtf8(pairs[0].key)).to.be.equal("Side");
+        expect(toUtf8(pairs[0].value)).to.be.equal("Dark");
+        expect(toUtf8(pairs[1].key)).to.be.equal("Has son");
+        expect(toUtf8(pairs[1].value)).to.be.equal("yes");
+      });
+
+    });
 
 });
