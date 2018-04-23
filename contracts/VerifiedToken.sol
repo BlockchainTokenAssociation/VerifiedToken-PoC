@@ -7,11 +7,17 @@ pragma solidity ^0.4.23;
 /// Created on 2018-04-10 12:00
 
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./VerifiedTokenController.sol";
 
 
-contract VerifiedToken is StandardToken {
+contract VerifiedToken is Ownable, StandardToken {
     VerifiedTokenController private tokenController;
+
+    event ControllerChanged (
+        VerifiedTokenController controller,
+        uint updatedAt
+    );
 
     constructor(VerifiedTokenController _controller) public {
         tokenController = VerifiedTokenController(_controller);
@@ -36,6 +42,16 @@ contract VerifiedToken is StandardToken {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(tokenController.isVerified(_to));
         super.transferFrom(_from, _to, _value);
+    }
+
+    function getController() public view returns (address) {
+        return address(tokenController);
+    }
+
+    function changeController(VerifiedTokenController _controller) public onlyOwner returns (address) {
+        require(_controller != tokenController);
+        tokenController = VerifiedTokenController(_controller);
+        emit ControllerChanged(_controller, now);
     }
 
 }
