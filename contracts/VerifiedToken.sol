@@ -20,7 +20,7 @@ contract VerifiedToken is Ownable, StandardToken {
     );
 
     constructor(VerifiedTokenController _controller) public {
-        tokenController = VerifiedTokenController(_controller);
+        changeController(_controller);
     }
 
     /*
