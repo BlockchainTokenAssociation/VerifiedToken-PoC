@@ -56,8 +56,8 @@ contract VerifiedTokenController is Ownable {
     function updateRegistries(VerifiedTokenRegistry[] _registries) public onlyOwner {
         for (uint256 i = 0; i < _registries.length; i++) {
             require(isContract(_registries[i]) && _registries[i] != address(0x0));
-            registries.push(_registries[i]);
         }
+        registries = _registries;
         emit AcceptedRegistriesUpdated(_registries, now);
     }
 
@@ -121,5 +121,21 @@ contract VerifiedTokenController is Ownable {
         return confirmationsRequired;
     }
 
+    function getRequiredData() public view returns (bytes32[], bytes32[]) {
+        uint256 numberOfPairs = informationRequired.length;
+        bytes32[] memory keys = new bytes32[](numberOfPairs);
+        bytes32[] memory values = new bytes32[](numberOfPairs);
+
+        for(uint i = 0; i < informationRequired.length; i++) {
+            keys[i] = informationRequired[i].key;
+            values[i] = informationRequired[i].value;
+        }
+
+        return (keys, values);
+    }
+
+    function getRegistries() public view returns (VerifiedTokenRegistry[]) {
+        return registries;
+    }
 
 }
