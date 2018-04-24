@@ -1,10 +1,7 @@
-import UIkit from 'uikit'
-import Icons from 'uikit/dist/js/uikit-icons'
+import UIkit from './../node_modules/uikit/dist/js/uikit.min'
 
-UIkit.use(Icons)
-
-let localWeb3, wsWeb3
-let registry, controller, token, results
+let localWeb3
+let registry, controller, token
 
 const INFURA_TOKEN = ""
 
@@ -758,14 +755,12 @@ function init() {
   const Web3 = require('web3')
 
   if (typeof(window.web3) === "undefined") {
-    UIkit.notification('No Web3 provider found. Connecting to testnet.')
-    localWeb3 = new Web3('wss://kovan.infura.io/' + INFURA_TOKEN)
+    UIkit.notification('No Web3 provider found. Connecting to Ropsten testnet.')
+    localWeb3 = new Web3('wss://ropsten.infura.io/' + INFURA_TOKEN)
   } else {
     UIkit.notification('Web3 initialized.')
     localWeb3 = new Web3(window.web3.currentProvider)
   }
-  wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('wss://kovan.infura.io/ws'));
-
 }
 
 function deploy(abi, address) {
