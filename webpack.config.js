@@ -14,24 +14,6 @@ module.exports = {
   externals: [nodeExternals({
     whitelist: ['web3']
   })],
-  //
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.js$/,
-  //       include: [
-  //         path.resolve(__dirname, "demo/assets"),
-  //         path.resolve(__dirname, "node_modules/web3")
-  //       ],
-  //       use: {
-  //         loader: 'babel-loader',
-  //         options: {
-  //           presets: ['@babel/preset-env']
-  //         }
-  //       }
-  //     }
-  //   ]
-  // },
 
   node: {
       fs: "empty"

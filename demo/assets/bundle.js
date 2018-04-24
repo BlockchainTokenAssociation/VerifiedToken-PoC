@@ -28,6 +28,29 @@ const registryABI = [
   },
   {
     "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "record",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -53,6 +76,29 @@ const registryABI = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -83,7 +129,7 @@ const registryABI = [
         "type": "uint256"
       }
     ],
-    "name": "RecordUpdated",
+    "name": "AddressUpdated",
     "type": "event"
   },
   {
@@ -109,23 +155,6 @@ const registryABI = [
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -141,7 +170,7 @@ const registryABI = [
         "type": "bytes32"
       }
     ],
-    "name": "updateRecord",
+    "name": "updateAddress",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -177,26 +206,7 @@ const registryABI = [
         "type": "bytes32"
       }
     ],
-    "name": "findAddress",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_key",
-        "type": "bytes32"
-      }
-    ],
-    "name": "isExist",
+    "name": "verifyAddress",
     "outputs": [
       {
         "name": "",
@@ -215,7 +225,7 @@ const registryABI = [
         "type": "address"
       }
     ],
-    "name": "getAddressPairs",
+    "name": "exposeAddress",
     "outputs": [
       {
         "name": "",
@@ -224,6 +234,25 @@ const registryABI = [
       {
         "name": "",
         "type": "bytes32[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32"
+      }
+    ],
+    "name": "isKeyExist",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -579,6 +608,20 @@ const tokenABI = [
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -625,6 +668,20 @@ const tokenABI = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "name": "_controller",
@@ -634,6 +691,23 @@ const tokenABI = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "controller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "updatedAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "ControllerChanged",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -677,6 +751,23 @@ const tokenABI = [
       }
     ],
     "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -728,12 +819,45 @@ const tokenABI = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getController",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_controller",
+        "type": "address"
+      }
+    ],
+    "name": "changeController",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]
 
-const registryContract = '0x2b3c48eA74374380eDF3F5ee0199154B30DbfBc8'
-const controllerContract = '0xCbA69FC3B63e009e2a6E86A1108C86d61828c923'
-const tokenContract = '0xdb879f2fb7444321b592f679d5123E867b838d33'
+const registryContract = '0xcC0E29cD1c51158c2E02d90AD3ee4e148f4Fe940'
+const controllerContract = '0x4424A37C75431504C79C4CF4855e77eCaF178E31'
+const tokenContract = '0xbE117a1dab198931e9b48666bFf1376B21F4c266'
 
 document.getElementById("verify").addEventListener("click", verify)
 document.getElementById("registries").addEventListener("click", registries)
@@ -757,7 +881,7 @@ function init() {
 
   if (typeof(window.web3) === "undefined") {
     UIkit.notification('No Web3 provider found. Connecting to Ropsten testnet.')
-    localWeb3 = new Web3('https://kovan.infura.io/' + INFURA_TOKEN)
+    localWeb3 = new Web3('wss://ropsten.infura.io/' + INFURA_TOKEN)
   } else {
     UIkit.notification('Web3 initialized.')
     localWeb3 = new Web3(window.web3.currentProvider)
