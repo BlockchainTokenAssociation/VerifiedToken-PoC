@@ -8,12 +8,12 @@ const should = require('chai')
     .use(require('chai-bignumber')(BigNumber))
     .should();
 
-const Token = artifacts.require('VerifiedTokenMock');
-const Controller = artifacts.require('VerifiedTokenController');
-const Registry = artifacts.require('VerifiedTokenRegistry');
+const Token = artifacts.require('TokenMock');
+const Controller = artifacts.require('Controller');
+const Registry = artifacts.require('Registry');
 
 
-contract('VerifiedTokenController.sol', function ([deployer, registered, stranger]) {
+contract('Controller.sol', function ([deployer, registered, stranger]) {
 
     before(async function () {
         this.registry = await Registry.new();
@@ -89,12 +89,12 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
         });
 
         it('otherwise, should update list of registries and fire an event', async function () {
-            const {logs} = await this.cntlr.updateRegistries([this.registry.address, this.token.address]).should.be.fulfilled;
+            const {logs} = await this.cntlr.updateRegistries([this.registry.address, this.registry.address]).should.be.fulfilled;
             const event = logs.find(e => e.event === 'AcceptedRegistriesUpdated');
             should.exist(event);
             event.args.registries.length.should.equal(2);
             event.args.registries[0].should.equal(this.registry.address);
-            event.args.registries[1].should.equal(this.token.address);
+            event.args.registries[1].should.equal(this.registry.address);
         });
 
     });
@@ -138,7 +138,7 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
       let result = await this.cntlr.getRegistries();
       result.length.should.equal(2);
       result[0].should.equal(this.registry.address);
-      result[1].should.equal(this.token.address);
+      result[1].should.equal(this.registry.address);
     });
 
   });

@@ -6,12 +6,12 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-const Token = artifacts.require('VerifiedTokenMock');
-const Registry = artifacts.require('VerifiedTokenRegistry');
-const Controller = artifacts.require('VerifiedTokenController');
+const Token = artifacts.require('TokenMock');
+const Registry = artifacts.require('Registry');
+const Controller = artifacts.require('Controller');
 
 
-contract('VerifiedToken.sol', function ([deployer, registry, stranger, guest, knownReceiver]) {
+contract('Token.sol', function ([deployer, registry, stranger, guest, knownReceiver]) {
 
   before(async function () {
     this.registry = await Registry.new();

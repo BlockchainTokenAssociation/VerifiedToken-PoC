@@ -7,10 +7,10 @@ const should = require('chai')
     .use(require('chai-bignumber')(BigNumber))
     .should();
 
-const Registry = artifacts.require('VerifiedTokenRegistryMock');
+const Registry = artifacts.require('RegistryMock');
 
 
-contract('VerifiedTokenRegistry.sol', function ([deployer, registry, stranger, lawful, dartVeider]) {
+contract('Registry.sol', function ([deployer, registry, stranger, lawful, dartVeider]) {
 
     before(async function () {
         this.registry = await Registry.new();
