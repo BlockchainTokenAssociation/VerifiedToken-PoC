@@ -52,13 +52,20 @@ contract VerifiedTokenController is Ownable {
 
     /*
      * @notice: Owner can add, delete or update the number of confirmations required for each registry
+     * @dev: adding addresses one by one is chosen, because of Solidity (for now) doesn't check
+     * @dev: if the list of addresses is the list of contracts.
      */
     function updateRegistries(VerifiedTokenRegistry[] _registries) public onlyOwner {
+        VerifiedTokenRegistry[] memory contracts = new VerifiedTokenRegistry[](_registries.length);
+        VerifiedTokenRegistry currentRegistry;
+
         for (uint256 i = 0; i < _registries.length; i++) {
-            require(isContract(_registries[i]) && _registries[i] != address(0x0));
+            currentRegistry = VerifiedTokenRegistry(_registries[i]);
+            require(isContract(currentRegistry));
+            contracts[i] = currentRegistry;
         }
-        registries = _registries;
-        emit AcceptedRegistriesUpdated(_registries, now);
+        registries = contracts;
+        emit AcceptedRegistriesUpdated(contracts, now);
     }
 
     /*

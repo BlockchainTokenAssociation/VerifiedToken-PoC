@@ -80,7 +80,14 @@ contract('VerifiedTokenController.sol', function ([deployer, registered, strange
             await this.cntlr.updateRegistries([0x1]).should.be.rejectedWith(EVMThrow);
         });
 
-        it('should fail if zero address', async function () {
+        it('should fail if registry is not a registry contract', async function () {
+          let res = await this.cntlr.updateRegistries([this.token.address]).should.be.rejectedWith(EVMThrow);
+          // console.log("res.tx : " + res.tx );
+          // console.log("res.receipt : " + Object.keys(res.receipt) );
+          // console.log("res.logs : " + Object.keys(res.logs) );
+        });
+
+      it('should fail if zero address', async function () {
             await this.cntlr.updateRegistries([0x0]).should.be.rejectedWith(EVMThrow);
         });
 
