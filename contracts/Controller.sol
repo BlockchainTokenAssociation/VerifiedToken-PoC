@@ -139,7 +139,6 @@ contract Controller is Ownable {
       keys[i] = informationRequired[i].key;
       values[i] = informationRequired[i].value;
     }
-
     return (keys, values);
   }
 
