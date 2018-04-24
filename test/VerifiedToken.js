@@ -24,7 +24,7 @@ contract('VerifiedToken.sol', function ([deployer, registry, stranger, guest, kn
 
   describe('transfer()', function () {
     it('should success for known receiver', async function () {
-      await this.registry.updateRecord(knownReceiver, "age group", "18+").should.be.fulfilled;
+      await this.registry.updateAddress(knownReceiver, "age group", "18+").should.be.fulfilled;
       await this.cntlr.updateRequiredData(["age group"],["18+"]).should.be.fulfilled;
       expect(await this.cntlr.isVerified(knownReceiver)).to.be.true;
       await this.token.transfer(knownReceiver, 10*10**18, {from: deployer}).should.be.fulfilled;
@@ -45,7 +45,7 @@ contract('VerifiedToken.sol', function ([deployer, registry, stranger, guest, kn
     });
 
     it('should success for known receiver', async function () {
-      await this.registry.updateRecord(stranger, "age group", "18+");
+      await this.registry.updateAddress(stranger, "age group", "18+");
       await this.token.approve(stranger, 10*10**18, {from: deployer});
       (await this.token.allowance(deployer, stranger)).should.be.bignumber.equal(10*10**18);
       (await this.cntlr.isVerified(stranger)).should.be.true;

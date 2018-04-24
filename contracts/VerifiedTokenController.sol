@@ -7,7 +7,7 @@ pragma solidity ^0.4.23;
 /// @author: Blockchain Labs, NZ
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./VerifiedTokenRegistry.sol";
+import "./IRegistry.sol";
 
 
 contract VerifiedTokenController is Ownable {
@@ -15,7 +15,7 @@ contract VerifiedTokenController is Ownable {
     /*
      * @notice: authorities that trusted by token issuer
      */
-    VerifiedTokenRegistry[] public registries;
+    IRegistry[] public registries;
 
     /*
      * @dev: if zero, no checks will be performed
@@ -39,13 +39,13 @@ contract VerifiedTokenController is Ownable {
         uint updatedAt);
 
     event AcceptedRegistriesUpdated(
-        VerifiedTokenRegistry[] registries,
+        IRegistry[] registries,
         uint updatedAt);
 
     /*
      * @dev: Contract owner must set up registry(ies) to use
      */
-    constructor(VerifiedTokenRegistry[] _registries, uint256 _confirmationsRequired) public {
+    constructor(IRegistry[] _registries, uint256 _confirmationsRequired) public {
         confirmationsRequired = _confirmationsRequired;
         updateRegistries(_registries);
     }
@@ -55,12 +55,12 @@ contract VerifiedTokenController is Ownable {
      * @dev: adding addresses one by one is chosen, because of Solidity (for now) doesn't check
      * @dev: if the list of addresses is the list of contracts.
      */
-    function updateRegistries(VerifiedTokenRegistry[] _registries) public onlyOwner {
-        VerifiedTokenRegistry[] memory contracts = new VerifiedTokenRegistry[](_registries.length);
-        VerifiedTokenRegistry currentRegistry;
+    function updateRegistries(IRegistry[] _registries) public onlyOwner {
+        IRegistry[] memory contracts = new IRegistry[](_registries.length);
+        IRegistry currentRegistry;
 
         for (uint256 i = 0; i < _registries.length; i++) {
-            currentRegistry = VerifiedTokenRegistry(_registries[i]);
+            currentRegistry = IRegistry(_registries[i]);
             require(isContract(currentRegistry));
             contracts[i] = currentRegistry;
         }
@@ -103,13 +103,13 @@ contract VerifiedTokenController is Ownable {
         uint256 confirmations;
         pairs memory currentPair;
         uint256 pairsToConfirm = informationRequired.length;
-        VerifiedTokenRegistry registry;
+        IRegistry registry;
 
         for(uint256 i = 0; i < registries.length; i++) {
-            registry = VerifiedTokenRegistry(registries[i]);
+            registry = IRegistry(registries[i]);
             for(uint256 j = 0; j < pairsToConfirm; j++) {
                 currentPair = informationRequired[j];
-                if(registry.findAddress(_receiver, currentPair.key, currentPair.value))
+                if(registry.verifyAddress(_receiver, currentPair.key, currentPair.value))
                     pairConfirmations++;
             }
             if (pairConfirmations >= pairsToConfirm) { confirmations++; }
@@ -141,7 +141,7 @@ contract VerifiedTokenController is Ownable {
         return (keys, values);
     }
 
-    function getRegistries() public view returns (VerifiedTokenRegistry[]) {
+    function getRegistries() public view returns (IRegistry[]) {
         return registries;
     }
 
