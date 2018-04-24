@@ -880,7 +880,7 @@ function init() {
 
   if (typeof(window.web3) === "undefined") {
     UIkit.notification('No Web3 provider found. Connecting to Ropsten testnet.')
-    localWeb3 = new Web3('wss://ropsten.infura.io/' + INFURA_TOKEN)
+    localWeb3 = new Web3('https://ropsten.infura.io/' + INFURA_TOKEN)
   } else {
     UIkit.notification('Web3 initialized.')
     localWeb3 = new Web3(window.web3.currentProvider)
@@ -914,8 +914,6 @@ async function confirmations() {
 
 async function requirements() {
   let result = await controller.methods.getRequiredData().call()
-  console.log("result: " + result);
-  let pairs = []
 
   for (let i = 0; i < result[0].length; i++) {
     let pair = {
