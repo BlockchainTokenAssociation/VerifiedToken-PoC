@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: [
     './demo/app.js',
     'webpack-dev-server/client?http://localhost:8080'
