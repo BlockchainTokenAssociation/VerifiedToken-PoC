@@ -1,4 +1,4 @@
-import UIkit from './../node_modules/uikit/dist/js/uikit.min'
+const UIkit = require('./../node_modules/uikit/dist/js/uikit.min')
 
 let localWeb3
 let registry, controller, token
@@ -752,7 +752,7 @@ async function main() {
 }
 
 function init() {
-  const Web3 = require('web3')
+  const Web3 = require('web3');
 
   if (typeof(window.web3) === "undefined") {
     UIkit.notification('No Web3 provider found. Connecting to Ropsten testnet.')

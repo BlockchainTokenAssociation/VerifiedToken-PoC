@@ -9,10 +9,30 @@ module.exports = {
   output: {
       path: path.resolve(__dirname, 'demo/assets'),
   },
+
   target: 'node', // in order to ignore built-in modules like path, fs, etc.
-  externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
-  plugins: [
-  ],
+  externals: [nodeExternals({
+    whitelist: ['web3']
+  })],
+  //
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.js$/,
+  //       include: [
+  //         path.resolve(__dirname, "demo/assets"),
+  //         path.resolve(__dirname, "node_modules/web3")
+  //       ],
+  //       use: {
+  //         loader: 'babel-loader',
+  //         options: {
+  //           presets: ['@babel/preset-env']
+  //         }
+  //       }
+  //     }
+  //   ]
+  // },
+
   node: {
       fs: "empty"
   }
