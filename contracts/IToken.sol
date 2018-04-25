@@ -1,0 +1,16 @@
+pragma solidity ^0.4.23;
+
+import "./IController.sol";
+
+
+contract IToken {
+  IController private tokenController;
+
+  event ControllerChanged (
+    IController controller,
+    uint updatedAt
+  );
+
+  function getController() public view returns (address);
+  function changeController(IController _controller) public returns (address);
+}

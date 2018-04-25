@@ -1,14 +1,34 @@
 pragma solidity ^0.4.23;
-
-/// @title: VerifiedTokenRegistry
-/// @summary: Registries management contract
-/// Created on 2018-04-10 12:00
-/// @author: Blockchain Labs, NZ
-
+/*
+ * @title: Verified Token Registry
+ * Receivers management contract
+ * Created on 2018-04-26, by Blockchain Labs, NZ
+ */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IRegistry.sol";
 
+
 contract Registry is IRegistry, Ownable {
+  /*
+   * @dev: [receiver address => [key => value]]
+   * @dev: Example:
+   * @dev: 0x12.. => ["type" => "exchange"]
+   * @dev: 0x12.. => ["age group" => "20-30"]
+   */
+  mapping(address => mapping(bytes32 => bytes32)) public record;
+
+  struct pairs {
+    bytes32 key;
+    bytes32 value;
+  }
+
+  /*
+   *  @dev: keys used by registry (in records).
+   *  @dev: Array of keys is needed to iterate through them, and mapping is used to
+   *  @dev: decrease the gas of checking whether the new key is need to be added to array or not.
+   */
+  bytes32[] public keys;
+
   /*
    * @dev: "Key' mapping is used to keep information about available keys
    */
@@ -51,7 +71,6 @@ contract Registry is IRegistry, Ownable {
   function exposeAddress(address _receiver) public view returns(bytes32[], bytes32[]) {
     uint256 maxNumberOfPairs = keys.length;
     bytes32 currentValue;
-
     bytes32[] memory receiverKeys = new bytes32[](maxNumberOfPairs);
     bytes32[] memory receiverValues = new bytes32[](maxNumberOfPairs);
     uint256 iteratorOfPairsOfReceiver;
@@ -72,7 +91,6 @@ contract Registry is IRegistry, Ownable {
       returnKeys[i] = receiverKeys[i];
       returnValues[i] = receiverValues[i];
     }
-
     return(returnKeys, returnValues);
   }
 

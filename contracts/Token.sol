@@ -1,25 +1,24 @@
 pragma solidity ^0.4.23;
-
-/// @title: VerifiedToken
-/// @summary: Implementation of transfer() and transferFrom() that checks if the receiver
-/// @summary: has enlisted in the registries required by the owner of token contract
-/// @author: Blockchain Labs, NZ
-/// Created on 2018-04-10 12:00
-
+/*
+ * @title: Verified Token
+ * Implementation of transfer() and transferFrom() that checks if the receiver
+ * has enlisted in the registries required by the token issuer/controller
+ * Created on 2018-04-26, by Blockchain Labs, NZ
+ */
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./Controller.sol";
+import "./IController.sol";
+import "./IToken.sol";
 
 
-contract Token is Ownable, StandardToken {
-  Controller private tokenController;
+contract Token is IToken, Ownable, StandardToken {
+  IController private tokenController;
 
-  event ControllerChanged (
-    Controller controller,
-    uint updatedAt
-  );
-
-  constructor(Controller _controller) public {
+  /*
+   * @dev: It requires to setup controller on deployment of the token contract
+   * @param _controller - address of Verified Token Controller contract
+   */
+  constructor(IController _controller) public {
     changeController(_controller);
   }
 
@@ -44,13 +43,16 @@ contract Token is Ownable, StandardToken {
     super.transferFrom(_from, _to, _value);
   }
 
+  /*
+   * @dev: It returns address of current Controller contract
+   */
   function getController() public view returns (address) {
     return address(tokenController);
   }
 
-  function changeController(Controller _controller) public onlyOwner returns (address) {
+  function changeController(IController _controller) public onlyOwner returns (address) {
     require(_controller != tokenController);
-    tokenController = Controller(_controller);
+    tokenController = IController(_controller);
     emit ControllerChanged(_controller, now);
   }
 }

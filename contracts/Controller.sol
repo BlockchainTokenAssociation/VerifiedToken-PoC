@@ -1,25 +1,20 @@
 pragma solidity ^0.4.23;
-
-/// @title: VerifiedTokenController
-/// @summary: Verification management for token owner
-/// @summary: Set initial number of confirmations required for each/any type of registry, adding or removing one.
-/// Created on 2018-04-10 12:00
-/// @author: Blockchain Labs, NZ
-
+/*
+ * @title: Verified Token Controller
+ * Verification management for token owner
+ * Setting initial number of confirmations required for each/any type of registry, adding or removing them.
+ * Created on 2018-04-26, by Blockchain Labs, NZ
+ */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IRegistry.sol";
+import "./IController.sol";
 
 
-contract Controller is Ownable {
-  /*
-   * @notice: authorities that trusted by token issuer
-   */
+contract Controller is IController, Ownable {
+/*
+ * @notice: authorities that trusted by token issuer
+ */
   IRegistry[] public registries;
-
-  /*
-   * @dev: if zero, no checks will be performed
-   */
-  uint256 private confirmationsRequired;
 
   struct pairs {
     bytes32 key;
@@ -27,6 +22,12 @@ contract Controller is Ownable {
   }
 
   pairs[] private informationRequired;
+
+  /*
+   * @dev: if zero, no checks will be performed
+   */
+  uint256 private confirmationsRequired;
+
 
   event RequiredConfirmationsUpdated(
     uint256 confirmations,
@@ -110,12 +111,13 @@ contract Controller is Ownable {
       registry = IRegistry(registries[i]);
       for(uint256 j = 0; j < pairsToConfirm; j++) {
         currentPair = informationRequired[j];
-        if(registry.verifyAddress(_receiver, currentPair.key, currentPair.value)) {
+        if(registry.verifyAddress(_receiver, currentPair.key, currentPair.value))
           pairConfirmations++;
-        }
       }
-      if (pairConfirmations >= pairsToConfirm) { confirmations++; }
-      if (confirmations >= confirmationsRequired) { return true; }
+      if (pairConfirmations >= pairsToConfirm)
+        confirmations++;
+      if (confirmations >= confirmationsRequired)
+        return true;
     }
     return false;
   }
