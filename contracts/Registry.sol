@@ -4,12 +4,12 @@ pragma solidity ^0.4.23;
  * Receivers management contract
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IRegistry.sol";
+import "./Operator.sol";
 import "./Attributes.sol";
 
 
-contract Registry is IRegistry, Attributes, Ownable {
+contract Registry is IRegistry, Operator, Attributes {
   /*
    * @dev: [receiver address => [key => value]]
    * @dev: Example:
@@ -23,6 +23,11 @@ contract Registry is IRegistry, Attributes, Ownable {
     bytes32 value;
   }
 
+  modifier onlyOperator() {
+    require(isOperator(msg.sender));
+    _;
+  }
+
   /*
    *  @dev: keys used by registry (in records).
    *  @dev: Array of keys is needed to iterate through them, and mapping is used to
@@ -34,31 +39,11 @@ contract Registry is IRegistry, Attributes, Ownable {
    * @dev: "Key' mapping is used to keep information about available keys
    */
   mapping(bytes32 => bool) private key;
-  mapping(address => bool) private operators;
 
   constructor() public {
     addOperator(msg.sender);
     updateAddress(this, REGISTRY_TYPE, "true");
     updateAddress(this, VERIFICATION_TYPE, "KYC");   // What type of registry you are? Update it.
-  }
-
-  modifier onlyOperator() {
-    require(isOperator(msg.sender));
-    _;
-  }
-
-  function addOperator(address _operator) public onlyOwner {
-    operators[_operator] = true;
-    emit OperatorAdded(_operator, now);
-  }
-
-  function removeOperator(address _operator) public onlyOwner {
-    operators[_operator] = false;
-    emit OperatorRemoved(_operator, now);
-  }
-
-  function isOperator(address who) public view returns (bool) {
-    return operators[who];
   }
 
   /*

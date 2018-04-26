@@ -1,7 +1,21 @@
 pragma solidity ^0.4.23;
 
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract Operator {
+
+contract Operator is Ownable {
+  mapping(address => bool) private operators;
+
+  event OperatorAdded(
+    address indexed operator,
+    uint updatedAt
+  );
+
+  event OperatorRemoved(
+    address indexed operator,
+    uint updatedAt
+  );
+
   modifier onlyOperator() {
     require(isOperator(msg.sender));
     _;
