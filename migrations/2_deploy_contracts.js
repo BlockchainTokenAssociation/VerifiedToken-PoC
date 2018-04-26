@@ -2,6 +2,7 @@ var StandardToken = artifacts.require("StandardToken");
 var Ownable = artifacts.require("Ownable");
 var Token = artifacts.require("Token");
 var Controller = artifacts.require("Controller");
+var Attributes = artifacts.require("Attributes");
 var IRegistry = artifacts.require("IRegistry");
 var Registry = artifacts.require("Registry");
 
@@ -11,6 +12,8 @@ module.exports = function(deployer) {
 		return deployer.deploy(Ownable);
     }).then(function(){
       return deployer.deploy(StandardToken);
+    }).then(function(){
+      return deployer.deploy(Attributes);
     }).then(function(){
       return deployer.deploy(Registry);
   	}).then(function() {

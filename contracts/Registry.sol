@@ -6,9 +6,10 @@ pragma solidity ^0.4.23;
  */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IRegistry.sol";
+import "./Attributes.sol";
 
 
-contract Registry is IRegistry, Ownable {
+contract Registry is IRegistry, Attributes, Ownable {
   /*
    * @dev: [receiver address => [key => value]]
    * @dev: Example:
@@ -33,16 +34,37 @@ contract Registry is IRegistry, Ownable {
    * @dev: "Key' mapping is used to keep information about available keys
    */
   mapping(bytes32 => bool) private key;
+  mapping(address => bool) private operators;
 
   constructor() public {
-    updateAddress(this, "Registry", "true");
-    updateAddress(this, "Registry type", "KYC");   // What type of registry you are? Update it.
+    addOperator(msg.sender);
+    updateAddress(this, REGISTRY_TYPE, "true");
+    updateAddress(this, VERIFICATION_TYPE, "KYC");   // What type of registry you are? Update it.
+  }
+
+  modifier onlyOperator() {
+    require(isOperator(msg.sender));
+    _;
+  }
+
+  function addOperator(address _operator) public onlyOwner {
+    operators[_operator] = true;
+    emit OperatorAdded(_operator, now);
+  }
+
+  function removeOperator(address _operator) public onlyOwner {
+    operators[_operator] = false;
+    emit OperatorRemoved(_operator, now);
+  }
+
+  function isOperator(address who) public view returns (bool) {
+    return operators[who];
   }
 
   /*
    * @notice: Registry can add new addresses to the list or update existed
    */
-  function updateAddress(address _receiver, bytes32 _key, bytes32 _value) public onlyOwner {
+  function updateAddress(address _receiver, bytes32 _key, bytes32 _value) public onlyOperator {
     record[_receiver][_key] = _value;
     if(!isKeyExist(_key))
       addNewKey(_key);
@@ -52,7 +74,7 @@ contract Registry is IRegistry, Ownable {
   /*
    * @notice: Registry can remove the given address completely
    */
-  function deleteAddress(address _receiver) public onlyOwner {
+  function deleteAddress(address _receiver) public onlyOperator {
     for(uint256 i = 0; i < keys.length; i++ )
       delete record[_receiver][keys[i]];
     emit AddressDeleted(this, _receiver, now);

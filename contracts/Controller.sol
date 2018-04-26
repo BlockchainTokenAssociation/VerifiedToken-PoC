@@ -8,9 +8,10 @@ pragma solidity ^0.4.23;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IRegistry.sol";
 import "./IController.sol";
+import "./Attributes.sol";
 
 
-contract Controller is IController, Ownable {
+contract Controller is IController, Attributes, Ownable {
 /*
  * @notice: authorities that trusted by token issuer
  */
@@ -65,7 +66,7 @@ contract Controller is IController, Ownable {
     for (uint256 i = 0; i < _registries.length; i++) {
       currentRegistry = IRegistry(_registries[i]);
       require(isContract(currentRegistry));
-      require(currentRegistry.verifyAddress(currentRegistry, "Registry", "true"));
+      require(currentRegistry.verifyAddress(currentRegistry, REGISTRY_TYPE, "true"));
       contracts[i] = currentRegistry;
     }
     registries = contracts;

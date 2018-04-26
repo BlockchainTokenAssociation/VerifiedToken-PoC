@@ -1,0 +1,6 @@
+pragma solidity ^0.4.23;
+
+contract Attributes {
+    bytes32 constant REGISTRY_TYPE = "registry.type";               // e.g.: Exchange, Government, Portal, ...
+    bytes32 constant VERIFICATION_TYPE = "verification.type";       // e.g.: KYC, Deposit, MinimumAmount, ...
+}
