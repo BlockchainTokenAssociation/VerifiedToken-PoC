@@ -4,12 +4,13 @@ pragma solidity ^0.4.23;
  * Receivers management contract
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
-import "./IRegistry.sol";
+import "./interfaces/IRegistry.sol";
 import "./Operator.sol";
+import "./Attribute.sol";
 import "./Attributes.sol";
 
 
-contract Registry is IRegistry, Operator, Attributes {
+contract Registry is IRegistry, Operator, Attribute, Attributes {
 	/*
 	 * @dev: [receiver address => [attribute => value]]
 	 * @dev: Example:
@@ -29,17 +30,8 @@ contract Registry is IRegistry, Operator, Attributes {
 	}
 
 	/*
-	 *  @dev: attributes used by registry (in records).
-	 *  @dev: Array of attributes is needed to iterate through them, and mapping is used to
-	 *  @dev: decrease the gas of checking whether the new attribute is need to be added to array or not.
+	 * @notice: on deploying, the contract "proves" that it is a registry and add its first operator
 	 */
-	bytes32[] public attributes;
-
-	/*
-	 * @dev: 'Attribute' mapping is used to keep information about available attributes
-	 */
-	mapping(bytes32 => bool) private attribute;
-
 	constructor() public {
 		addOperator(msg.sender);
 		update(this, REGISTRY_TYPE, "portal");
@@ -107,21 +99,4 @@ contract Registry is IRegistry, Operator, Attributes {
 	function hasAttribute(address _address, bytes32 _attribute) public view returns(bool) {
 		return(record[_address][_attribute] != "");
 	}
-
-	/*
-	 * @dev: check if attribute exists
-	 */
-	function attributeExists(bytes32 _attribute) public view returns(bool) {
-		return(attribute[_attribute]);
-	}
-
-	/*
-	 * @dev: add new attribute to mapping and array
-	 */
-	function addAttribute(bytes32 _attribute) internal returns(bool) {
-		attributes.push(_attribute);
-		attribute[_attribute] = true;
-	}
-
-
 }

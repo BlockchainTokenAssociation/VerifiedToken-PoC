@@ -7,8 +7,8 @@ pragma solidity ^0.4.23;
  */
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./IController.sol";
-import "./IToken.sol";
+import "./interfaces/IController.sol";
+import "./interfaces/IToken.sol";
 
 
 contract Token is IToken, Ownable, StandardToken {

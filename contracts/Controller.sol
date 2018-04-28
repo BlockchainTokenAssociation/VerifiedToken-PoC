@@ -6,8 +6,8 @@ pragma solidity ^0.4.23;
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./IRegistry.sol";
-import "./IController.sol";
+import "./interfaces/IRegistry.sol";
+import "./interfaces/IController.sol";
 import "./Attributes.sol";
 
 
