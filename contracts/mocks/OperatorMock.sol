@@ -1,12 +1,9 @@
 pragma solidity ^0.4.0;
 
-import './../Token.sol';
+import './../Operator.sol';
 
-contract TokenMock is Token {
-
-    constructor(IController _controller) public Token(_controller) {}
-
-    function giveMeCoins(address _address, uint256 _amount) public {
-        balances[_address] = _amount;
+contract OperatorMock is Operator {
+    function testOnlyOperator() public view onlyOperator returns(bool) {
+        return true;
     }
 }

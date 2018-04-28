@@ -6,13 +6,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 contract Operator is Ownable {
   mapping(address => bool) private operators;
 
-  event OperatorAdded(
+  event OperatorStatusUpdated(
     address indexed operator,
-    uint updatedAt
-  );
-
-  event OperatorRemoved(
-    address indexed operator,
+    bool indexed status,
     uint updatedAt
   );
 
@@ -21,17 +17,12 @@ contract Operator is Ownable {
     _;
   }
 
-  function addOperator(address _operator) public onlyOwner {
-    operators[_operator] = true;
-    emit OperatorAdded(_operator, now);
+  function updateOperator(address _operator, bool _status) public onlyOwner {
+    operators[_operator] = _status;
+    emit OperatorStatusUpdated(_operator, _status, now);
   }
 
-  function removeOperator(address _operator) public onlyOwner {
-    operators[_operator] = false;
-    emit OperatorRemoved(_operator, now);
-  }
-
-  function isOperator(address who) public view returns (bool) {
-    return operators[who];
+  function isOperator(address _address) public view returns (bool) {
+    return operators[_address];
   }
 }

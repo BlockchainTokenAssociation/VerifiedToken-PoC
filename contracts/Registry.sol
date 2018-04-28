@@ -33,7 +33,7 @@ contract Registry is IRegistry, Operator, Attribute, Attributes {
 	 * @notice: on deploying, the contract "proves" that it is a registry and add its first operator
 	 */
 	constructor() public {
-		addOperator(msg.sender);
+		updateOperator(msg.sender, true);
 		update(this, REGISTRY_TYPE, "portal");
 		update(this, VERIFICATION_TYPE, "KYC");   // What type of registry you are? Update it.
 	}
