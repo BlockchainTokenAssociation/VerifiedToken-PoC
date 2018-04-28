@@ -66,7 +66,7 @@ contract Controller is IController, Attributes, Ownable {
     for (uint256 i = 0; i < _registries.length; i++) {
       currentRegistry = IRegistry(_registries[i]);
       require(isContract(currentRegistry));
-      require(currentRegistry.verifyAddress(currentRegistry, REGISTRY_TYPE, "true"));
+      require(currentRegistry.hasAttribute(currentRegistry, REGISTRY_TYPE));
       contracts[i] = currentRegistry;
     }
     registries = contracts;
@@ -112,7 +112,7 @@ contract Controller is IController, Attributes, Ownable {
       registry = IRegistry(registries[i]);
       for(uint256 j = 0; j < pairsToConfirm; j++) {
         currentPair = informationRequired[j];
-        if(registry.verifyAddress(_receiver, currentPair.key, currentPair.value))
+        if(registry.verify(_receiver, currentPair.key, currentPair.value))
           pairConfirmations++;
       }
       if (pairConfirmations >= pairsToConfirm)
