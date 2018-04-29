@@ -25,11 +25,17 @@ contract Operator is Ownable {
     _;
   }
 
+	/*
+   * @notice: Update the operators and their status
+   */
   function updateOperator(address _operator, bool _status) public onlyOwner {
     operators[_operator] = _status;
     emit OperatorStatusUpdated(_operator, _status, now);
   }
 
+	/*
+   * @notice: Check if address is listed as an operator (status == true)
+   */
   function isOperator(address _address) public view returns (bool) {
     return operators[_address];
   }

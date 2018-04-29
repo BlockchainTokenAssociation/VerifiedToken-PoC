@@ -1,5 +1,9 @@
 pragma solidity ^0.4.23;
-
+/*
+ * @title: VTRegistry Operator
+ * Registry Operators management
+ * Created on 2018-04-26, by Blockchain Labs, NZ
+ */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 

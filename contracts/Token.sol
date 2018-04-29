@@ -50,6 +50,9 @@ contract Token is IToken, Ownable, StandardToken {
     return address(tokenController);
   }
 
+  /*
+   * @dev: Change the controller of the Token
+   */
   function changeController(IController _controller) public onlyOwner returns (address) {
     require(_controller != tokenController);
     tokenController = IController(_controller);

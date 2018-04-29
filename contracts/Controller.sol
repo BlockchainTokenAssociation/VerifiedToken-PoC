@@ -17,8 +17,11 @@ contract Controller is IController, Attributes, Ownable {
  */
   IRegistry[] public registries;
 
+	/*
+   * @notice: attribute key and value are stored in 'pairs'
+   */
   struct pairs {
-    bytes32 key;
+    bytes32 attribute;
     bytes32 value;
   }
 
@@ -84,21 +87,21 @@ contract Controller is IController, Attributes, Ownable {
   /*
    * @notice: Owner can add, delete or update key=>values required to grant authorisation
    */
-  function updateRequiredData(bytes32[] _keys, bytes32[] _values) public onlyOwner {
-    uint256 pairsNumber = _keys.length;
+  function updateRequiredData(bytes32[] _attributes, bytes32[] _values) public onlyOwner {
+    uint256 pairsNumber = _attributes.length;
     require( pairsNumber == _values.length);
     pairs memory newPair;
 
     for (uint256 i = 0; i < pairsNumber; i++) {
-      newPair.key = _keys[i];
+      newPair.attribute = _attributes[i];
       newPair.value =_values[i];
       informationRequired.push(newPair);
-      emit RequiredDataUpdated(_keys[i], _values[i], now);
+      emit RequiredDataUpdated(_attributes[i], _values[i], now);
     }
   }
 
   /*
-   * @dev: checks if each key=>value pair exist in the required number of registries
+   * @dev: checks if each attribute=>value pair exist in the required number of registries
    */
   function isVerified(address _receiver) public view returns(bool) {
     if(confirmationsRequired == 0) { return true; }
@@ -112,7 +115,7 @@ contract Controller is IController, Attributes, Ownable {
       registry = IRegistry(registries[i]);
       for(uint256 j = 0; j < pairsToConfirm; j++) {
         currentPair = informationRequired[j];
-        if(registry.verify(_receiver, currentPair.key, currentPair.value))
+        if(registry.verify(_receiver, currentPair.attribute, currentPair.value))
           pairConfirmations++;
       }
       if (pairConfirmations >= pairsToConfirm)
@@ -123,28 +126,40 @@ contract Controller is IController, Attributes, Ownable {
     return false;
   }
 
+  /*
+   * @dev: checks if an address is the contract address
+   */
   function isContract(address addr) public view returns (bool) {
     uint size;
     assembly { size := extcodesize(addr) }
     return size > 0;
   }
 
+  /*
+   * @dev: return the number of confirmations required for successful transfer
+   */
   function getNumberOfConfirmationsRequired() public view returns (uint) {
     return confirmationsRequired;
   }
 
+  /*
+   * @dev: return the pairs (attribute=>value) required for successful transfer
+   */
   function getRequiredData() public view returns (bytes32[], bytes32[]) {
     uint256 numberOfPairs = informationRequired.length;
-    bytes32[] memory keys = new bytes32[](numberOfPairs);
+    bytes32[] memory attributes = new bytes32[](numberOfPairs);
     bytes32[] memory values = new bytes32[](numberOfPairs);
 
     for(uint i = 0; i < informationRequired.length; i++) {
-      keys[i] = informationRequired[i].key;
+      attributes[i] = informationRequired[i].attribute;
       values[i] = informationRequired[i].value;
     }
-    return (keys, values);
+    return (attributes, values);
   }
 
+  /*
+   * @dev: return list of registries that assigned by Token Issuer to verify token transfers
+   */
   function getRegistries() public view returns (IRegistry[]) {
     return registries;
   }

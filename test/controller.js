@@ -35,7 +35,7 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
             await this.cntlr.updateRequiredData(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
         });
 
-        it('should update key => value pairs and fire an event for each pair', async function () {
+        it('should update attribute => value pairs and fire an event for each pair', async function () {
             const {logs} = await this.cntlr.updateRequiredData(["id type","allowed age group"],["passport","18+"]).should.be.fulfilled;
             const event = logs.filter(e => e.event === 'RequiredDataUpdated');
             should.exist(event);
@@ -101,19 +101,19 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
     });
 
     describe('getRequiredData()', function () {
-        it('should return the data (key=>value pairs)', async function () {
+        it('should return the data (attribute => value pairs)', async function () {
             let result = await this.cntlr.getRequiredData();
             let pairs = [];
             for (let i = 0; i < result[0].length; i++) {
                 let pair = {
-                    key:  result[0][i],
+                    attribute:  result[0][i],
                     value: result[1][i],
                 }
                 pairs.push(pair)
             }
-            expect(toUtf8(pairs[0].key)).to.be.equal("id type");
+            expect(toUtf8(pairs[0].attribute)).to.be.equal("id type");
             expect(toUtf8(pairs[0].value)).to.be.equal("passport");
-            expect(toUtf8(pairs[1].key)).to.be.equal("allowed age group");
+            expect(toUtf8(pairs[1].attribute)).to.be.equal("allowed age group");
             expect(toUtf8(pairs[1].value)).to.be.equal("18+");
         });
     });

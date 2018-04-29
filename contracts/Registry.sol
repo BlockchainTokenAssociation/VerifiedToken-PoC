@@ -19,6 +19,9 @@ contract Registry is IRegistry, Operator, Attribute, Attributes {
    */
   mapping(address => mapping(bytes32 => bytes32)) public record;
 
+	/*
+   * @notice: attribute key and value are stored in 'pairs'
+   */
   struct pairs {
     bytes32 attribute;
     bytes32 value;
