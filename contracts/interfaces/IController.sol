@@ -4,7 +4,6 @@ import "./IRegistry.sol";
 
 
 contract IController {
-
   event RequiredConfirmationsUpdated(
     uint256 confirmations,
     uint updatedAt

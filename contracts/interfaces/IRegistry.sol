@@ -2,7 +2,6 @@ pragma solidity ^0.4.23;
 
 
 contract IRegistry {
-
   event RecordUpdated(
     address indexed registry,
     address indexed receiver,

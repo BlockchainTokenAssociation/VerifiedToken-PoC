@@ -1,9 +1,17 @@
 pragma solidity ^0.4.23;
-
+/*
+ * @title: Operator
+ * Management of registry operators
+ * CRUD + events
+ * Created on 2018-04-26, by Blockchain Labs, NZ
+ */
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 contract Operator is Ownable {
+	/*
+   * @notice: List of operators and their status
+   */
   mapping(address => bool) private operators;
 
   event OperatorStatusUpdated(

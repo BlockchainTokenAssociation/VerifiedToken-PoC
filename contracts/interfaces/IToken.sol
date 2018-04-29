@@ -4,7 +4,6 @@ import "./IController.sol";
 
 
 contract IToken {
-
   event ControllerChanged (
     IController controller,
     uint updatedAt
