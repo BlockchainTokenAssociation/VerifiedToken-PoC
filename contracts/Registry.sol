@@ -44,7 +44,7 @@ contract Registry is IRegistry, Operator, Attribute, Attributes {
   function update(address _receiver, bytes32 _attribute, bytes32 _value) public onlyOperator {
     record[_receiver][_attribute] = _value;
     if(!attributeExists(_attribute))
-		  addAttribute(_attribute);
+      addAttribute(_attribute);
     emit RecordUpdated(this, _receiver, _attribute, _value, now);
   }
 
@@ -53,7 +53,7 @@ contract Registry is IRegistry, Operator, Attribute, Attributes {
    */
   function remove(address _receiver) public onlyOperator {
     for(uint256 i = 0; i < attributes.length; i++ )
-    	delete record[_receiver][attributes[i]];
+      delete record[_receiver][attributes[i]];
     emit AddressRemoved(this, _receiver, now);
   }
 
