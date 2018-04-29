@@ -30,7 +30,7 @@ contract Registry is IRegistry, Operator, Attribute, Attributes {
   }
 
   /*
-   * @notice: on deploying, the contract "proves" that it is a registry and add its first operator
+   * @notice: on deploying, the contract "proves" that it is a registry and adds its first operator
    */
   constructor() public {
     updateOperator(msg.sender, true);
