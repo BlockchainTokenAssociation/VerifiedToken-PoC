@@ -58,7 +58,7 @@ https://github.com/ethereum/EIPs/blob/master/ISSUE_TEMPLATE.md
 * You can run `webpack --watch` in other terminal if you are going to change code in ./app/ folder 
 * Open `localhost:8080` in your browser
 
-[Demo](https://blockchainlabsnz.github.io/VerifiedToken/) - if you use Metamask, please switch to Kovan network.
+[Demo](https://blockchainlabsnz.github.io/VerifiedToken/) - if you use Metamask, please switch to Ropsten network.
 
 <br>
 
