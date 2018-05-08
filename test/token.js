@@ -11,7 +11,7 @@ const Registry = artifacts.require('Registry');
 const Controller = artifacts.require('Controller');
 
 
-contract('Token.sol', function ([deployer, registry, stranger, guest, knownReceiver]) {
+contract('Token.sol', function ([deployer, registry, stranger, guest, knownReceiver, sender]) {
 
     before(async function () {
         this.registry = await Registry.new();
@@ -23,10 +23,10 @@ contract('Token.sol', function ([deployer, registry, stranger, guest, knownRecei
     });
 
     describe('transfer()', function () {
-        it('should success for known receiver', async function () {
+        it('should succeed for known receiver', async function () {
             await this.registry.update(knownReceiver, "age group", "18+").should.be.fulfilled;
-            await this.cntlr.updateRequiredData(["age group"],["18+"]).should.be.fulfilled;
-            expect(await this.cntlr.isVerified(knownReceiver)).to.be.true;
+            await this.cntlr.updateReceiverRequirements(["age group"],["18+"]).should.be.fulfilled;
+            expect(await this.cntlr.isReceiverVerified(knownReceiver)).to.be.true;
             await this.token.transfer(knownReceiver, 10*10**18, {from: deployer}).should.be.fulfilled;
             (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(10*10**18);
         });
@@ -35,23 +35,53 @@ contract('Token.sol', function ([deployer, registry, stranger, guest, knownRecei
             await this.token.transfer(stranger, 10*10**18, {from: deployer}).should.be.rejectedWith(EVMThrow);
             (await this.token.balanceOf(stranger)).should.be.bignumber.equal(0);
         });
+
+        it('should succeed if send by authorized sender', async function () {
+            await this.cntlr.updateSenderRequirements(["Type"],["Exchange"]).should.be.fulfilled;
+            await this.registry.update(deployer, "Type", "Exchange").should.be.fulfilled;
+            await this.token.transfer(knownReceiver, 10*10**18, {from: deployer}).should.be.fulfilled;
+            (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(20*10**18);
+        });
+
+        it('should fail if send by non-authorized sender', async function () {
+            await this.token.transfer(knownReceiver, 10*10**18, {from: sender}).should.be.rejectedWith(EVMThrow);
+            (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(20*10**18);
+        });
     });
 
     describe('transferFrom()', function () {
         it('should fail for unknown address', async function () {
-            (await this.cntlr.isVerified(stranger)).should.be.false;
+            (await this.cntlr.isReceiverVerified(stranger)).should.be.false;
             await this.token.transferFrom(deployer, stranger, 10*10**18).should.be.rejectedWith(EVMThrow);
-            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(90*10**18);
+            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(80*10**18);
         });
 
-        it('should success for known receiver', async function () {
-            await this.registry.update(stranger, "age group", "18+");
-            await this.token.approve(stranger, 10*10**18, {from: deployer});
-            (await this.token.allowance(deployer, stranger)).should.be.bignumber.equal(10*10**18);
-            (await this.cntlr.isVerified(stranger)).should.be.true;
-            await this.token.transferFrom(deployer, stranger, 5*10**18,{from: stranger});
-            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(85*10**18);
-            (await this.token.balanceOf(stranger)).should.be.bignumber.equal(5*10**18);
+        it('should succeed for known receiver if there are no sender requirements', async function () {
+            await this.cntlr.updateSenderRequirements([],[]).should.be.fulfilled;
+            let result = (await this.cntlr.getSenderRequirements());
+            result[0].length.should.be.equal(0);
+            await this.token.approve(knownReceiver, 10*10**18, {from: deployer});
+            (await this.token.allowance(deployer, knownReceiver)).should.be.bignumber.equal(10*10**18);
+            await this.token.transferFrom(deployer, knownReceiver, 5*10**18,{from: knownReceiver}).should.be.fulfilled;
+            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(75*10**18);
+            (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(25*10**18);
+        });
+
+        it('should fail if send by non-authorized sender', async function () {
+            await this.cntlr.updateSenderRequirements(["Type"],["Exchange"]).should.be.fulfilled;
+            await this.registry.remove(deployer).should.be.fulfilled;
+            (await this.token.allowance(deployer, knownReceiver)).should.be.bignumber.equal(5*10**18);
+            await this.token.transferFrom(deployer, knownReceiver, 5*10**18,{from: knownReceiver}).should.be.rejectedWith(EVMThrow);
+            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(75*10**18);
+            (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(25*10**18);
+        });
+
+        it('should succeed if send by authorized sender to verified receiver', async function () {
+            await this.registry.update(deployer, "Type", "Exchange").should.be.fulfilled;
+            (await this.token.allowance(deployer, knownReceiver)).should.be.bignumber.equal(5*10**18);
+            await this.token.transferFrom(deployer, knownReceiver, 5*10**18,{from: knownReceiver}).should.be.fulfilled;
+            (await this.token.balanceOf(deployer)).should.be.bignumber.equal(70*10**18);
+            (await this.token.balanceOf(knownReceiver)).should.be.bignumber.equal(30*10**18);
         });
     });
 

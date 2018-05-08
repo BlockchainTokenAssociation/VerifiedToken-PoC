@@ -30,14 +30,14 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
         });
     });
 
-    describe('updateRequiredData()', function () {
+    describe('updateReceiverRequirements()', function () {
         it('should fail if number of keys not the same as the number of values', async function () {
-            await this.cntlr.updateRequiredData(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
+            await this.cntlr.updateReceiverRequirements(["token address","allowed age group"],["18+"]).should.be.rejectedWith(EVMThrow);
         });
 
         it('should update attribute => value pairs and fire an event for each pair', async function () {
-            const {logs} = await this.cntlr.updateRequiredData(["id type","allowed age group"],["passport","18+"]).should.be.fulfilled;
-            const event = logs.filter(e => e.event === 'RequiredDataUpdated');
+            const {logs} = await this.cntlr.updateReceiverRequirements(["id type","allowed age group"],["passport","18+"]).should.be.fulfilled;
+            const event = logs.filter(e => e.event === 'ReceiverRequirementsUpdated');
             should.exist(event);
             event.length.should.equal(2);
             toUtf8(event[0].args.key).should.equal("id type");
@@ -47,15 +47,32 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
         });
     });
 
-    describe('isVerified()', function () {
+    describe('updateSenderRequirements()', function () {
+        it('should fail if number of keys not the same as the number of values', async function () {
+            await this.cntlr.updateSenderRequirements(["Exchange","Broker"],["true"]).should.be.rejectedWith(EVMThrow);
+        });
+
+        it('should update attribute => value pairs and fire an event for each pair', async function () {
+            const {logs} = await this.cntlr.updateSenderRequirements(["Exchange","Broker"],["true","true"]).should.be.fulfilled;
+            const event = logs.filter(e => e.event === 'SenderRequirementsUpdated');
+            should.exist(event);
+            event.length.should.equal(2);
+            toUtf8(event[0].args.key).should.equal("Exchange");
+            toUtf8(event[0].args.value).should.equal("true");
+            toUtf8(event[1].args.key).should.equal("Broker");
+            toUtf8(event[1].args.value).should.equal("true");
+        });
+    });
+
+    describe('isReceiverVerified()', function () {
         it('should return TRUE if required number of confirmations = 0', async function () {
             await this.cntlr.updateRequiredConfirmations(0);
-            (await this.cntlr.isVerified(stranger)).should.be.true;
+            (await this.cntlr.isReceiverVerified(stranger)).should.be.true;
         });
 
         it('should return FALSE if required number of confirmations > 0', async function () {
             await this.cntlr.updateRequiredConfirmations(2);
-            (await this.cntlr.isVerified(stranger)).should.be.false;
+            (await this.cntlr.isReceiverVerified(stranger)).should.be.false;
         });
     });
 
@@ -100,9 +117,10 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
         });
     });
 
-    describe('getRequiredData()', function () {
+    describe('getReceiverRequirements()', function () {
         it('should return the data (attribute => value pairs)', async function () {
-            let result = await this.cntlr.getRequiredData();
+            await this.cntlr.updateReceiverRequirements(["id type","allowed age group"],["passport","18+"]).should.be.fulfilled;
+            let result = await this.cntlr.getReceiverRequirements();
             let pairs = [];
             for (let i = 0; i < result[0].length; i++) {
                 let pair = {
@@ -115,6 +133,25 @@ contract('Controller.sol', function ([deployer, registered, stranger]) {
             expect(toUtf8(pairs[0].value)).to.be.equal("passport");
             expect(toUtf8(pairs[1].attribute)).to.be.equal("allowed age group");
             expect(toUtf8(pairs[1].value)).to.be.equal("18+");
+        });
+    });
+
+    describe('getSenderRequirements()', function () {
+        it('should return the data (attribute => value pairs)', async function () {
+            await this.cntlr.updateSenderRequirements(["Exchange","Broker"],["true","true"]).should.be.fulfilled;
+            let result = await this.cntlr.getSenderRequirements();
+            let pairs = [];
+            for (let i = 0; i < result[0].length; i++) {
+                let pair = {
+                    attribute: result[0][i],
+                    value: result[1][i],
+                }
+                pairs.push(pair)
+            }
+            expect(toUtf8(pairs[0].attribute)).to.be.equal("Exchange");
+            expect(toUtf8(pairs[0].value)).to.be.equal("true");
+            expect(toUtf8(pairs[1].attribute)).to.be.equal("Broker");
+            expect(toUtf8(pairs[1].value)).to.be.equal("true");
         });
     });
 

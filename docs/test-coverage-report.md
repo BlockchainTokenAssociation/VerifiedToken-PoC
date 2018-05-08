@@ -48,7 +48,7 @@ performed by Blockchain Labs, April 28, 2018
     updateRequiredData()
       ✓ should fail if number of keys not the same as the number of values
       ✓ should update key => value pairs and fire an event for each pair (90ms)
-    isVerified()
+    isReceiverVerified()
       ✓ should return TRUE if required number of confirmations = 0 (57ms)
       ✓ should return FALSE if required number of confirmations > 0 (196ms)
     isContract()

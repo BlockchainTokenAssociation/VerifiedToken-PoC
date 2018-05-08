@@ -18,7 +18,7 @@ performed by Blockchain Labs, April 28, 2018
     updateRequiredData()
       ✓ should fail if number of keys not the same as the number of values (25571 gas)
       ✓ should update key => value pairs and fire an event for each pair (135742 gas)
-    isVerified()
+    isReceiverVerified()
       ✓ should return TRUE if required number of confirmations = 0 (14164 gas)
       ✓ should return FALSE if required number of confirmations > 0 (43391 gas)
     isContract()
