@@ -28,7 +28,7 @@ contract Token is IToken, Ownable, StandardToken {
    * @param _value - the amount to transfer
    */
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(tokenController.isVerified(_to));
+    require(tokenController.isTransferAllowed(_to, msg.sender));
     super.transfer(_to, _value);
   }
 
@@ -39,7 +39,7 @@ contract Token is IToken, Ownable, StandardToken {
    * @param _value - the amount to transfer
    */
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-    require(tokenController.isVerified(_to));
+    require(tokenController.isTransferAllowed(_to, _from));
     super.transferFrom(_from, _to, _value);
   }
 
@@ -54,7 +54,7 @@ contract Token is IToken, Ownable, StandardToken {
    * @dev: Change the controller of the Token
    */
   function changeController(IController _controller) public onlyOwner returns (address) {
-    require(_controller != tokenController);
+    require(_controller != tokenController, "Controller should not be the same");
     tokenController = IController(_controller);
     emit ControllerChanged(_controller, now);
   }

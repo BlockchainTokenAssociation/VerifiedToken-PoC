@@ -449,7 +449,7 @@ const controllerABI = [
         "type": "address"
       }
     ],
-    "name": "isVerified",
+    "name": "isReceiverVerified",
     "outputs": [
       {
         "name": "",
@@ -893,7 +893,7 @@ function deploy(abi, address) {
 
 async function verify() {
   let address = await document.querySelector('#addressToCheck').value
-  let result = await controller.methods.isVerified(address).call()
+  let result = await controller.methods.isReceiverVerified(address).call()
   if (result === true)
     UIkit.notification({message: 'Verified', status: 'default'})
   else

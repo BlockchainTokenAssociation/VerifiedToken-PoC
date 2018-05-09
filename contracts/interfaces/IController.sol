@@ -9,7 +9,13 @@ contract IController {
     uint updatedAt
   );
 
-  event RequiredDataUpdated(
+  event ReceiverRequirementsUpdated(
+    bytes32 indexed key,
+    bytes32 indexed value,
+    uint updatedAt
+  );
+
+  event SenderRequirementsUpdated(
     bytes32 indexed key,
     bytes32 indexed value,
     uint updatedAt
@@ -21,13 +27,14 @@ contract IController {
   );
 
   function getRegistries() public view returns (IRegistry[]);
-  function updateRegistries(IRegistry[] _registries) public;
-
-  function getRequiredData() public view returns (bytes32[], bytes32[]);
-  function updateRequiredData(bytes32[] _keys, bytes32[] _values) public;
-
   function getNumberOfConfirmationsRequired() public view returns (uint);
-  function updateRequiredConfirmations(uint256 _confirmationsRequired) public;
+  function getReceiverRequirements() public view returns (bytes32[], bytes32[]);
+  function getSenderRequirements() public view returns (bytes32[], bytes32[]);
 
-  function isVerified(address _receiver) public view returns(bool);
+  function updateRegistries(IRegistry[] _registries) public;
+  function updateRequiredConfirmations(uint256 _confirmationsRequired) public;
+  function updateReceiverRequirements(bytes32[] _keys, bytes32[] _values) public;
+  function updateSenderRequirements(bytes32[] _keys, bytes32[] _values) public;
+
+  function isTransferAllowed(address _receiver, address _sender) public view returns(bool);
 }

@@ -20,5 +20,5 @@ contract IRegistry {
   function verify(address _address, bytes32 _attribute, bytes32 _value) public view returns(bool);
   function expose(address _address) public view returns(bytes32[], bytes32[]);
   function remove(address _address) public;
-	function hasAttribute(address _address, bytes32 _attribute) public view returns(bool);
+  function hasAttribute(address _address, bytes32 _attribute) public view returns(bool);
 }

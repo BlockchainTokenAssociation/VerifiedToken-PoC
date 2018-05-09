@@ -25,7 +25,8 @@ contract Controller is IController, Attributes, Ownable {
     bytes32 value;
   }
 
-  pairs[] private informationRequired;
+  pairs[] private receiverRequirements;
+  pairs[] private senderRequirements;
 
   /*
    * @dev: if zero, no checks will be performed
@@ -48,6 +49,7 @@ contract Controller is IController, Attributes, Ownable {
     IRegistry[] registries,
     uint updatedAt
   );
+
 
   /*
    * @dev: Contract owner must set up registry(ies) to use
@@ -85,42 +87,96 @@ contract Controller is IController, Attributes, Ownable {
   }
 
   /*
-   * @notice: Owner can add, delete or update key=>values required to grant authorisation
+   * @notice: Owner can add, delete or update Receiver requirements
    */
-  function updateRequiredData(bytes32[] _attributes, bytes32[] _values) public onlyOwner {
+  function updateReceiverRequirements(bytes32[] _attributes, bytes32[] _values) public onlyOwner {
     uint256 pairsNumber = _attributes.length;
     require( pairsNumber == _values.length);
     pairs memory newPair;
+    receiverRequirements.length = 0;
+
+    if (pairsNumber == 0)
+      emit ReceiverRequirementsUpdated("no requirements", "no requirements", now);
 
     for (uint256 i = 0; i < pairsNumber; i++) {
       newPair.attribute = _attributes[i];
       newPair.value =_values[i];
-      informationRequired.push(newPair);
-      emit RequiredDataUpdated(_attributes[i], _values[i], now);
+      receiverRequirements.push(newPair);
+      emit ReceiverRequirementsUpdated(_attributes[i], _values[i], now);
     }
   }
 
   /*
-   * @dev: checks if each attribute=>value pair exist in the required number of registries
+   * @notice: Owner can add, delete or update Sender requirements
    */
-  function isVerified(address _receiver) public view returns(bool) {
-    if(confirmationsRequired == 0) { return true; }
-    uint256 pairConfirmations;
-    uint256 confirmations;
-    pairs memory currentPair;
-    uint256 pairsToConfirm = informationRequired.length;
+  function updateSenderRequirements(bytes32[] _attributes, bytes32[] _values) public onlyOwner{
+    uint256 pairsNumber = _attributes.length;
+    require( pairsNumber == _values.length);
+    pairs memory newPair;
+    senderRequirements.length = 0;
+
+    if (pairsNumber == 0)
+      emit SenderRequirementsUpdated("no requirements", "no requirements", now);
+
+    for (uint256 i = 0; i < pairsNumber; i++) {
+      newPair.attribute = _attributes[i];
+      newPair.value =_values[i];
+      senderRequirements.push(newPair);
+      emit SenderRequirementsUpdated(_attributes[i], _values[i], now);
+    }
+  }
+
+  /*
+   * @dev: checks if token transfer is allowed
+   */
+  function isTransferAllowed(address _receiver, address _sender) public view returns(bool) {
+    if(confirmationsRequired != 0) {
+      require(isVerified(_sender, senderRequirements), "Sender has not been authorized to send tokens");
+      require(isVerified(_receiver, receiverRequirements), "Receiver was not verified");
+    }
+    return true;
+  }
+
+  /*
+   * @dev: checks if Receiver is verified
+   */
+  function isReceiverVerified(address _address) public view returns(bool) {
+    return isVerified(_address, receiverRequirements);
+  }
+
+  /*
+   * @dev: checks if Receiver is verified
+   */
+  function isSenderVerified(address _address) public view returns(bool) {
+    return isVerified(_address, senderRequirements);
+  }
+
+  /*
+   * @dev: checks if the address from appropriate requirements list has attribute=>value pair in the registry
+   */
+  function isVerified(address _address, pairs[] requirements) internal view returns(bool) {
+    if(requirements.length == 0)
+      return false;
+
+    uint256 pairsToConfirm = requirements.length;
+    uint256 pairsConfirmed;
+    uint256 registriesConfirmed;
     IRegistry registry;
+    pairs memory currentPair;
 
     for(uint256 i = 0; i < registries.length; i++) {
       registry = IRegistry(registries[i]);
+      pairsConfirmed = 0;
+
       for(uint256 j = 0; j < pairsToConfirm; j++) {
-        currentPair = informationRequired[j];
-        if(registry.verify(_receiver, currentPair.attribute, currentPair.value))
-          pairConfirmations++;
+        currentPair = requirements[j];
+        if(registry.verify(_address, currentPair.attribute, currentPair.value))
+          pairsConfirmed++;
       }
-      if (pairConfirmations >= pairsToConfirm)
-        confirmations++;
-      if (confirmations >= confirmationsRequired)
+
+      if (pairsConfirmed >= pairsToConfirm)
+        registriesConfirmed++;
+      if (registriesConfirmed >= confirmationsRequired)
         return true;
     }
     return false;
@@ -143,19 +199,37 @@ contract Controller is IController, Attributes, Ownable {
   }
 
   /*
-   * @dev: return the pairs (attribute=>value) required for successful transfer
+   * @dev: return the pairs (attribute=>value) required for Receiver in order to transfer tokens
    */
-  function getRequiredData() public view returns (bytes32[], bytes32[]) {
-    uint256 numberOfPairs = informationRequired.length;
-    bytes32[] memory attributes = new bytes32[](numberOfPairs);
-    bytes32[] memory values = new bytes32[](numberOfPairs);
-
-    for(uint i = 0; i < informationRequired.length; i++) {
-      attributes[i] = informationRequired[i].attribute;
-      values[i] = informationRequired[i].value;
+  function getReceiverRequirements() public view returns (bytes32[], bytes32[]) {
+    uint256 numberOfPairs = receiverRequirements.length;
+    if (numberOfPairs != 0) {
+      bytes32[] memory attributes = new bytes32[](numberOfPairs);
+      bytes32[] memory values = new bytes32[](numberOfPairs);
+      for(uint i = 0; i < receiverRequirements.length; i++) {
+          attributes[i] = receiverRequirements[i].attribute;
+          values[i] = receiverRequirements[i].value;
+      }
     }
     return (attributes, values);
   }
+
+  /*
+   * @dev: return the pairs (attribute=>value) required for Sender in order to transfer tokens
+   */
+  function getSenderRequirements() public view returns (bytes32[], bytes32[]) {
+    uint256 numberOfPairs = senderRequirements.length;
+    if (numberOfPairs != 0) {
+      bytes32[] memory attributes = new bytes32[](numberOfPairs);
+      bytes32[] memory values = new bytes32[](numberOfPairs);
+      for(uint i = 0; i < senderRequirements.length; i++) {
+        attributes[i] = senderRequirements[i].attribute;
+        values[i] = senderRequirements[i].value;
+      }
+    }
+    return (attributes, values);
+  }
+
 
   /*
    * @dev: return list of registries that assigned by Token Issuer to verify token transfers
