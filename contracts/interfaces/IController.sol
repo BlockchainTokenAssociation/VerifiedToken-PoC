@@ -21,7 +21,6 @@ contract IController {
     uint updatedAt
   );
 
-
   event AcceptedRegistriesUpdated(
     IRegistry[] registries,
     uint updatedAt
@@ -37,6 +36,5 @@ contract IController {
   function updateReceiverRequirements(bytes32[] _keys, bytes32[] _values) public;
   function updateSenderRequirements(bytes32[] _keys, bytes32[] _values) public;
 
-  function isReceiverVerified(address _receiver) public view returns(bool);
-  function isSenderVerified(address _sender) public view returns(bool);
+  function isTransferAllowed(address _receiver, address _sender) public view returns(bool);
 }

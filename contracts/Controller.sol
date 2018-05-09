@@ -50,6 +50,7 @@ contract Controller is IController, Attributes, Ownable {
     uint updatedAt
   );
 
+
   /*
    * @dev: Contract owner must set up registry(ies) to use
    */
@@ -94,6 +95,9 @@ contract Controller is IController, Attributes, Ownable {
     pairs memory newPair;
     receiverRequirements.length = 0;
 
+    if (pairsNumber == 0)
+      emit ReceiverRequirementsUpdated("no requirements", "no requirements", now);
+
     for (uint256 i = 0; i < pairsNumber; i++) {
       newPair.attribute = _attributes[i];
       newPair.value =_values[i];
@@ -111,6 +115,9 @@ contract Controller is IController, Attributes, Ownable {
     pairs memory newPair;
     senderRequirements.length = 0;
 
+    if (pairsNumber == 0)
+      emit SenderRequirementsUpdated("no requirements", "no requirements", now);
+
     for (uint256 i = 0; i < pairsNumber; i++) {
       newPair.attribute = _attributes[i];
       newPair.value =_values[i];
@@ -120,42 +127,58 @@ contract Controller is IController, Attributes, Ownable {
   }
 
   /*
+   * @dev: checks if token transfer is allowed
+   */
+  function isTransferAllowed(address _receiver, address _sender) public view returns(bool) {
+    if(confirmationsRequired != 0) {
+      require(isVerified(_sender, senderRequirements), "Sender has not been authorized to send tokens");
+      require(isVerified(_receiver, receiverRequirements), "Receiver was not verified");
+    }
+    return true;
+  }
+
+  /*
    * @dev: checks if Receiver is verified
    */
   function isReceiverVerified(address _address) public view returns(bool) {
-    return isVerified(_address, receiverRequirements) ? true : false;
+    return isVerified(_address, receiverRequirements);
   }
 
   /*
    * @dev: checks if Receiver is verified
    */
   function isSenderVerified(address _address) public view returns(bool) {
-    return isVerified(_address, senderRequirements) ? true : false;
+    return isVerified(_address, senderRequirements);
   }
 
   /*
    * @dev: checks if the address from appropriate requirements list has attribute=>value pair in the registry
    */
   function isVerified(address _address, pairs[] requirements) internal view returns(bool) {
-    if(confirmationsRequired == 0) { return true; }
-    uint256 pairConfirmations;
-    uint256 confirmations;
-    pairs memory currentPair;
+    if(requirements.length == 0)
+      return false;
+
     uint256 pairsToConfirm = requirements.length;
+    uint256 pairsConfirmed;
+    uint256 registriesConfirmed;
     IRegistry registry;
+    pairs memory currentPair;
 
     for(uint256 i = 0; i < registries.length; i++) {
       registry = IRegistry(registries[i]);
+      pairsConfirmed = 0;
+
       for(uint256 j = 0; j < pairsToConfirm; j++) {
         currentPair = requirements[j];
         if(registry.verify(_address, currentPair.attribute, currentPair.value))
-          pairConfirmations++;
-        }
-        if (pairConfirmations >= pairsToConfirm)
-          confirmations++;
-        if (confirmations >= confirmationsRequired)
-          return true;
+          pairsConfirmed++;
       }
+
+      if (pairsConfirmed >= pairsToConfirm)
+        registriesConfirmed++;
+      if (registriesConfirmed >= confirmationsRequired)
+        return true;
+    }
     return false;
   }
 
@@ -176,43 +199,41 @@ contract Controller is IController, Attributes, Ownable {
   }
 
   /*
-   * @dev: return the pairs (attribute=>value) required for Receiver to transfer tokens
+   * @dev: return the pairs (attribute=>value) required for Receiver in order to transfer tokens
    */
-    function getReceiverRequirements() public view returns (bytes32[], bytes32[]) {
-        uint256 numberOfPairs = receiverRequirements.length;
-        bytes32[] memory attributes = new bytes32[](numberOfPairs);
-        bytes32[] memory values = new bytes32[](numberOfPairs);
-        if (receiverRequirements.length == 0) {
-          attributes[0] = "";
-          values[0] = "";
-        }
-        else {
-          for(uint i = 0; i < receiverRequirements.length; i++) {
-              attributes[i] = receiverRequirements[i].attribute;
-              values[i] = receiverRequirements[i].value;
-          }
-        }
-      return (attributes, values);
-    }
-
-  /*
-   * @dev: return the pairs (attribute=>value) required for Sender to transfer tokens
-   */
-  function getSenderRequirements() public view returns (bytes32[], bytes32[]) {
-    uint256 numberOfPairs = senderRequirements.length;
-    bytes32[] memory attributes = new bytes32[](numberOfPairs);
-    bytes32[] memory values = new bytes32[](numberOfPairs);
-
-    for(uint i = 0; i < senderRequirements.length; i++) {
-      attributes[i] = senderRequirements[i].attribute;
-      values[i] = senderRequirements[i].value;
+  function getReceiverRequirements() public view returns (bytes32[], bytes32[]) {
+    uint256 numberOfPairs = receiverRequirements.length;
+    if (numberOfPairs != 0) {
+      bytes32[] memory attributes = new bytes32[](numberOfPairs);
+      bytes32[] memory values = new bytes32[](numberOfPairs);
+      for(uint i = 0; i < receiverRequirements.length; i++) {
+          attributes[i] = receiverRequirements[i].attribute;
+          values[i] = receiverRequirements[i].value;
+      }
     }
     return (attributes, values);
   }
 
-    /*
-     * @dev: return list of registries that assigned by Token Issuer to verify token transfers
-     */
+  /*
+   * @dev: return the pairs (attribute=>value) required for Sender in order to transfer tokens
+   */
+  function getSenderRequirements() public view returns (bytes32[], bytes32[]) {
+    uint256 numberOfPairs = senderRequirements.length;
+    if (numberOfPairs != 0) {
+      bytes32[] memory attributes = new bytes32[](numberOfPairs);
+      bytes32[] memory values = new bytes32[](numberOfPairs);
+      for(uint i = 0; i < senderRequirements.length; i++) {
+        attributes[i] = senderRequirements[i].attribute;
+        values[i] = senderRequirements[i].value;
+      }
+    }
+    return (attributes, values);
+  }
+
+
+  /*
+   * @dev: return list of registries that assigned by Token Issuer to verify token transfers
+   */
   function getRegistries() public view returns (IRegistry[]) {
     return registries;
   }

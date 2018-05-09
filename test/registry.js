@@ -10,7 +10,7 @@ const should = require('chai')
 const Registry = artifacts.require('RegistryMock');
 
 
-contract('Registry.sol', function ([deployer, registry, stranger, lawful, dartVeider]) {
+contract('Registry.sol', function ([owner, stranger, lawful, dartVeider]) {
 
     before(async function () {
         this.registry = await Registry.new();
