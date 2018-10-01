@@ -1,11 +1,11 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 /*
  * @title: Operator
  * Management of registry operators
  * CRUD + events
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 contract Operator is Ownable {

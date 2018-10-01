@@ -1,12 +1,12 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 /*
  * @title: Verified Token
  * Implementation of transfer() and transferFrom() that checks if the receiver
  * has enlisted in the registries required by the token issuer/controller
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
-import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./interfaces/IController.sol";
 import "./interfaces/IToken.sol";
 

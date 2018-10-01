@@ -1,11 +1,11 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 /*
  * @title: Verified Token Controller
  * Verification management for token owner
  * Setting initial number of confirmations required for each/any type of registry, adding or removing them.
  * Created on 2018-04-26, by Blockchain Labs, NZ
  */
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./interfaces/IRegistry.sol";
 import "./interfaces/IController.sol";
 import "./Attributes.sol";

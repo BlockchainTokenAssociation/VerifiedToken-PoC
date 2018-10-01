@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 /*
  * @title: Attributes
  * Attributes supposed for Registry to define the Registry type
