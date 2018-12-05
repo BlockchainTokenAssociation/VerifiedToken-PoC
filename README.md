@@ -1,7 +1,9 @@
-# Verified Token
+# Verified Token PoC
 
 ## Purpose
-This is a private repo for drafting documentation, code examples, and the EIP specification prior to submission to Ethereum Foundation. A tidy public repo will be created at the time of publication.
+This is a Proof of Concept implementation of the Verified Token Framework, as such it reflects the early design thinking and concepts, much of which has evolved over the months following working with issuers, exchanges, lawyers, and regulators.
+
+You can find the most up-to-date information at https://verifiedtokenframework.com/.
 
 ### As Per ERC20:
 `totalSupply`
@@ -32,23 +34,7 @@ This is a private repo for drafting documentation, code examples, and the EIP sp
 `setClaimsNeeded` - sets how many of the AllowedRegistry need to return the RequiredClaim for a transfer to be valid
 (Only Owner)
 
-## Broader Context
-
-There are standards that we overlap with in some way - let’s read & learn from the comments refining each of them. My current thinking is that we propose our Verified Token Standard as an extension to ERC #20, #223, & #721
-
-- https://github.com/ethereum/EIPs/issues/721 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md 
-- https://github.com/ethereum/EIPs/issues/827
-- https://github.com/ethereum/EIPs/issues/875
-- https://github.com/ethereum/EIPs/issues/821
-- https://github.com/ethereum/EIPs/issues/223 
-- https://github.com/ethereum/EIPs/issues/777 (less overlap but I like this one from Jordi)
-
-Also read:
-https://github.com/ethereum/EIPs/blob/master/ISSUE_TEMPLATE.md
-
-
-## Front End
-
+## Front End (example)
 
 ### Installation
 
