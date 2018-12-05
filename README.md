@@ -3,7 +3,7 @@
 ## Purpose
 This is a Proof of Concept implementation of the Verified Token Framework, as such it reflects the early design thinking and concepts, much of which has evolved over the months following working with issuers, exchanges, lawyers, and regulators.
 
-You can find the most up-to-date information at https://verifiedtokenframework.com/.
+You can find the most up-to-date information at https://verifiedtokenframework.com/ and in the [VTF whitepaper](https://github.com/BlockchainTokenAssociation/VerifiedToken-PoC/blob/master/docs/Verified-Token-Framework-Paper-October-2018-v1.0%20(1).pdf).
 
 ### As Per ERC20:
 `totalSupply`
